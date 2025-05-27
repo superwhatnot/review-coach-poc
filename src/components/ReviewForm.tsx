@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { StarRating } from './StarRating';
 import { PhotoUpload } from './PhotoUpload';
+import { ReviewAssistant } from './ReviewAssistant';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -62,6 +63,13 @@ export const ReviewForm: React.FC = () => {
       title: "Review Submitted!",
       description: "Thank you for sharing your experience. Your review will be published soon.",
     });
+  };
+
+  const handleAISuggestion = (suggestion: string) => {
+    // Add the suggestion as a prompt at the end of the current review text
+    const currentText = formData.review;
+    const newText = currentText + (currentText ? '\n\n' : '') + suggestion;
+    setFormData(prev => ({ ...prev, review: newText }));
   };
 
   const ratingCategories = [
@@ -170,6 +178,12 @@ export const ReviewForm: React.FC = () => {
             <p className="text-sm text-gray-500 mt-2">
               Minimum 10 characters. Current: {formData.review.length}
             </p>
+
+            {/* AI Review Assistant */}
+            <ReviewAssistant
+              reviewText={formData.review}
+              onSuggestionAccept={handleAISuggestion}
+            />
           </div>
 
           <div>
