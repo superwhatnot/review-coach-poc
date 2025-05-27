@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { CircleRating } from './CircleRating';
 import { PhotoUpload } from './PhotoUpload';
@@ -80,7 +79,7 @@ export const ReviewForm: React.FC = () => {
         {/* Overall Rating */}
         <Card>
           <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Rate your stay</h2>
+            <h2 className="text-xl font-semibold mb-4">How would you rate your experience?</h2>
             
             <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-center justify-between">
