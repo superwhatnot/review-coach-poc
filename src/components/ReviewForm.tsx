@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { CircleRating } from './CircleRating';
 import { PhotoUpload } from './PhotoUpload';
@@ -81,28 +82,21 @@ export const ReviewForm: React.FC = () => {
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4">How would you rate your experience?</h2>
             
-            <div className="bg-gray-50 rounded-lg p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">How would you rate your experience?</h3>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CircleRating
-                    rating={formData.overallRating}
-                    onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
-                    size={32}
-                  />
-                  {formData.overallRating > 0 && (
-                    <span className="text-lg font-medium text-gray-700 min-w-24">
-                      {formData.overallRating === 1 && "Terrible"}
-                      {formData.overallRating === 2 && "Poor"}
-                      {formData.overallRating === 3 && "Average"}
-                      {formData.overallRating === 4 && "Very Good"}
-                      {formData.overallRating === 5 && "Excellent"}
-                    </span>
-                  )}
-                </div>
-              </div>
+            <div className="flex items-center justify-between">
+              <CircleRating
+                rating={formData.overallRating}
+                onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
+                size={32}
+              />
+              {formData.overallRating > 0 && (
+                <span className="text-lg font-medium text-gray-700 min-w-24">
+                  {formData.overallRating === 1 && "Terrible"}
+                  {formData.overallRating === 2 && "Poor"}
+                  {formData.overallRating === 3 && "Average"}
+                  {formData.overallRating === 4 && "Very Good"}
+                  {formData.overallRating === 5 && "Excellent"}
+                </span>
+              )}
             </div>
           </CardContent>
         </Card>
