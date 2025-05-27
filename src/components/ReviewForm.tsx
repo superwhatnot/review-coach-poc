@@ -66,118 +66,126 @@ export const ReviewForm: React.FC = () => {
   };
 
   const handleAISuggestion = (suggestion: string) => {
-    // Add the suggestion as a prompt at the end of the current review text
     const currentText = formData.review;
     const newText = currentText + (currentText ? '\n\n' : '') + suggestion;
     setFormData(prev => ({ ...prev, review: newText }));
   };
 
   const ratingCategories = [
-    { key: 'serviceRating', label: 'Service', icon: '🤝' },
-    { key: 'cleanlinessRating', label: 'Cleanliness', icon: '🧹' },
-    { key: 'valueRating', label: 'Value', icon: '💰' },
-    { key: 'locationRating', label: 'Location', icon: '📍' }
+    { key: 'serviceRating', label: 'Service' },
+    { key: 'cleanlinessRating', label: 'Cleanliness' },
+    { key: 'valueRating', label: 'Value' },
+    { key: 'locationRating', label: 'Location' }
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto bg-white">
       {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-gray-900">Write a Review</h1>
-        <div className="flex items-center justify-center gap-2 text-gray-600">
-          <MapPin size={16} />
-          <span>The Grand Hotel & Spa</span>
+      <div className="border-b border-gray-200 pb-6 mb-8">
+        <div className="flex items-start gap-4">
+          <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+            <MapPin className="w-8 h-8 text-gray-400" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">Bonoo Indian Tapas Hampstead</h1>
+            <p className="text-gray-600 mb-2">London, England</p>
+            <div className="flex items-center gap-4 text-sm text-gray-500">
+              <span>Indian Restaurant</span>
+              <span>•</span>
+              <span>Hampstead</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Overall Rating */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            Overall Rating
-            <span className="text-red-500">*</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <StarRating
-              rating={formData.overallRating}
-              onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
-              size={32}
-            />
-            <span className="text-lg font-medium text-gray-700">
-              {formData.overallRating > 0 && (
-                <span className="ml-2">
-                  {formData.overallRating === 1 && "Terrible"}
-                  {formData.overallRating === 2 && "Poor"}
-                  {formData.overallRating === 3 && "Average"}
-                  {formData.overallRating === 4 && "Very Good"}
-                  {formData.overallRating === 5 && "Excellent"}
-                </span>
-              )}
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Category Ratings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Rate Different Aspects</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {ratingCategories.map(({ key, label, icon }) => (
-              <div key={key} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">{icon}</span>
-                  <span className="font-medium">{label}</span>
-                </div>
-                <StarRating
-                  rating={formData[key as keyof ReviewFormData] as number}
-                  onRatingChange={(rating) => setFormData(prev => ({ ...prev, [key]: rating }))}
-                  size={20}
-                />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Review Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Tell Us About Your Experience</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Rating Section */}
+        <div className="space-y-6">
           <div>
-            <Label htmlFor="title" className="text-base font-medium">
-              Review Title <span className="text-red-500">*</span>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Rate your experience</h2>
+            
+            {/* Overall Rating */}
+            <div className="bg-gray-50 rounded-lg p-6 mb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">Overall rating</h3>
+                  <p className="text-sm text-gray-600">How was your overall experience?</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <StarRating
+                    rating={formData.overallRating}
+                    onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
+                    size={28}
+                  />
+                  {formData.overallRating > 0 && (
+                    <span className="text-sm font-medium text-gray-700 min-w-20">
+                      {formData.overallRating === 1 && "Terrible"}
+                      {formData.overallRating === 2 && "Poor"}
+                      {formData.overallRating === 3 && "Average"}
+                      {formData.overallRating === 4 && "Very Good"}
+                      {formData.overallRating === 5 && "Excellent"}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Category Ratings */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {ratingCategories.map(({ key, label }) => (
+                <div key={key} className="flex items-center justify-between py-3 px-4 border border-gray-200 rounded-lg">
+                  <span className="font-medium text-gray-900">{label}</span>
+                  <StarRating
+                    rating={formData[key as keyof ReviewFormData] as number}
+                    onRatingChange={(rating) => setFormData(prev => ({ ...prev, [key]: rating }))}
+                    size={20}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Review Content */}
+        <div className="space-y-6">
+          <h2 className="text-xl font-semibold text-gray-900">Write your review</h2>
+          
+          <div>
+            <Label htmlFor="title" className="text-base font-medium text-gray-900 mb-2 block">
+              Give your review a title
             </Label>
             <Input
               id="title"
-              placeholder="Summarize your visit or highlight an interesting detail"
+              placeholder="e.g., Amazing food and great service!"
               value={formData.title}
               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              className="mt-2"
+              className="text-base"
             />
+            <p className="text-sm text-gray-500 mt-1">
+              Keep it short and sweet
+            </p>
           </div>
 
           <div>
-            <Label htmlFor="review" className="text-base font-medium">
-              Your Review <span className="text-red-500">*</span>
+            <Label htmlFor="review" className="text-base font-medium text-gray-900 mb-2 block">
+              Tell us about your experience
             </Label>
             <Textarea
               id="review"
-              placeholder="Tell people about your experience: what you liked, what you didn't like, and anything else you think would be helpful to know."
+              placeholder="What did you like or dislike? How was the service? What would you tell other diners?"
               value={formData.review}
               onChange={(e) => setFormData(prev => ({ ...prev, review: e.target.value }))}
-              className="mt-2 min-h-32"
+              className="min-h-32 text-base resize-none"
               rows={6}
             />
-            <p className="text-sm text-gray-500 mt-2">
-              Minimum 10 characters. Current: {formData.review.length}
-            </p>
+            <div className="flex justify-between items-center mt-2">
+              <p className="text-sm text-gray-500">
+                Minimum 100 characters
+              </p>
+              <p className="text-sm text-gray-500">
+                {formData.review.length}/5000
+              </p>
+            </div>
 
             {/* AI Review Assistant */}
             <ReviewAssistant
@@ -186,45 +194,52 @@ export const ReviewForm: React.FC = () => {
             />
           </div>
 
-          <div>
-            <Label htmlFor="visitDate" className="text-base font-medium flex items-center gap-2">
-              <Calendar size={16} />
-              Date of Visit
-            </Label>
-            <Input
-              id="visitDate"
-              type="month"
-              value={formData.visitDate}
-              onChange={(e) => setFormData(prev => ({ ...prev, visitDate: e.target.value }))}
-              className="mt-2 max-w-xs"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="visitDate" className="text-base font-medium text-gray-900 mb-2 block">
+                When did you visit?
+              </Label>
+              <Input
+                id="visitDate"
+                type="month"
+                value={formData.visitDate}
+                onChange={(e) => setFormData(prev => ({ ...prev, visitDate: e.target.value }))}
+                className="text-base"
+              />
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Photo Upload */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Add Photos</CardTitle>
-          <p className="text-gray-600">Help other travelers by sharing photos of your experience</p>
-        </CardHeader>
-        <CardContent>
+        {/* Photo Upload */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-gray-900">Add photos</h2>
+          <p className="text-gray-600">Help travelers by sharing photos of your experience</p>
           <PhotoUpload
             onPhotosChange={(photos) => setFormData(prev => ({ ...prev, photos }))}
           />
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Submit Button */}
-      <div className="flex justify-center pt-6">
-        <Button 
-          type="submit" 
-          size="lg"
-          className="bg-green-600 hover:bg-green-700 text-white px-12 py-3 text-lg font-medium"
-        >
-          Submit Review
-        </Button>
-      </div>
-    </form>
+        {/* Submit Section */}
+        <div className="border-t border-gray-200 pt-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="text-sm text-gray-600">
+              <p>By posting, you agree to TripAdvisor's Terms of Use and Privacy Policy.</p>
+            </div>
+            <div className="flex gap-3">
+              <Button variant="outline" type="button" size="lg">
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                size="lg"
+                className="bg-black hover:bg-gray-800 text-white px-8"
+              >
+                Post review
+              </Button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
