@@ -72,8 +72,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({ onPhotosChange }) => {
       {photos.length === 0 && (
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
           <Camera size={48} className="mx-auto text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Add photos of your stay</h3>
-          <p className="text-gray-500 mb-4">Travelers love to see photos! Upload up to 10 photos from your trip.</p>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Click to add photos or drag and drop</h3>
           <label>
             <Button variant="outline" className="cursor-pointer">
               <Upload className="mr-2" size={16} />

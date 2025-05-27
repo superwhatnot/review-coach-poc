@@ -68,19 +68,9 @@ export const ReviewForm: React.FC = () => {
           </div>
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Club Hotel Marina Beach</h1>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
               <MapPin className="w-4 h-4" />
               <span>Marina di Orosei, Orosei, Province of Nuoro, Sardinia, Italy</span>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <div className="flex">
-                  {[1, 2, 3, 4].map((star) => (
-                    <div key={star} className="w-3 h-3 bg-green-500 rounded-full mr-0.5"></div>
-                  ))}
-                </div>
-                <span className="text-gray-600">4.0 star hotel</span>
-              </div>
             </div>
           </div>
         </div>
@@ -136,12 +126,9 @@ export const ReviewForm: React.FC = () => {
                   className="min-h-40 text-base resize-none"
                   rows={8}
                 />
-                <div className="flex justify-between items-center mt-2">
+                <div className="flex justify-end items-center mt-2">
                   <p className="text-sm text-gray-500">
-                    Minimum 200 characters recommended
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {formData.review.length}/5000
+                    {formData.review.length}/200 min characters
                   </p>
                 </div>
               </div>
@@ -165,8 +152,7 @@ export const ReviewForm: React.FC = () => {
         {/* Photo Upload */}
         <Card>
           <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-2">Add photos</h2>
-            <p className="text-gray-600 mb-4">Travelers love photos! Add up to 10 photos to your review.</p>
+            <h2 className="text-xl font-semibold mb-4">Add some photos</h2>
             <PhotoUpload
               onPhotosChange={(photos) => setFormData(prev => ({ ...prev, photos }))}
             />
