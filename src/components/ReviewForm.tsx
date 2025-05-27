@@ -14,8 +14,6 @@ interface ReviewFormData {
   overallRating: number;
   title: string;
   review: string;
-  visitDate: string;
-  tripType: string;
   photos: File[];
 }
 
@@ -25,8 +23,6 @@ export const ReviewForm: React.FC = () => {
     overallRating: 0,
     title: '',
     review: '',
-    visitDate: '',
-    tripType: '',
     photos: []
   });
 
@@ -57,14 +53,6 @@ export const ReviewForm: React.FC = () => {
       description: "Thank you for sharing your experience. Your review will be published soon.",
     });
   };
-
-  const tripTypes = [
-    'Business',
-    'Couples',
-    'Family',
-    'Friends',
-    'Solo'
-  ];
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -130,64 +118,12 @@ export const ReviewForm: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Trip Details */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Tell us about your trip</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="visitDate" className="text-base font-medium text-gray-900 mb-2 block">
-                  Date of stay
-                </Label>
-                <Input
-                  id="visitDate"
-                  type="month"
-                  value={formData.visitDate}
-                  onChange={(e) => setFormData(prev => ({ ...prev, visitDate: e.target.value }))}
-                  className="text-base"
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="tripType" className="text-base font-medium text-gray-900 mb-2 block">
-                  Trip type
-                </Label>
-                <select
-                  id="tripType"
-                  value={formData.tripType}
-                  onChange={(e) => setFormData(prev => ({ ...prev, tripType: e.target.value }))}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
-                  <option value="">Select trip type</option>
-                  {tripTypes.map((type) => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Review Content */}
         <Card>
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4">Write your review</h2>
             
             <div className="space-y-6">
-              <div>
-                <Label htmlFor="title" className="text-base font-medium text-gray-900 mb-2 block">
-                  Title of your review
-                </Label>
-                <Input
-                  id="title"
-                  placeholder="Summarize your visit or highlight an interesting detail"
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  className="text-base"
-                />
-              </div>
-
               <div>
                 <Label htmlFor="review" className="text-base font-medium text-gray-900 mb-2 block">
                   Your review
@@ -208,6 +144,19 @@ export const ReviewForm: React.FC = () => {
                     {formData.review.length}/5000
                   </p>
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="title" className="text-base font-medium text-gray-900 mb-2 block">
+                  Title of your review
+                </Label>
+                <Input
+                  id="title"
+                  placeholder="Summarize your visit or highlight an interesting detail"
+                  value={formData.title}
+                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  className="text-base"
+                />
               </div>
             </div>
           </CardContent>
@@ -241,7 +190,7 @@ export const ReviewForm: React.FC = () => {
               </div>
               <div className="flex gap-3">
                 <Button variant="outline" type="button" size="lg">
-                  Cancel
+                  Save Draft
                 </Button>
                 <Button 
                   type="submit" 
