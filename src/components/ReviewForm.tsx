@@ -1,23 +1,17 @@
 
 import React, { useState } from 'react';
-import { StarRating } from './StarRating';
+import { CircleRating } from './CircleRating';
 import { PhotoUpload } from './PhotoUpload';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Calendar, Users, Bed } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ReviewFormData {
   overallRating: number;
-  serviceRating: number;
-  cleanlinessRating: number;
-  valueRating: number;
-  locationRating: number;
-  roomsRating: number;
-  sleepQualityRating: number;
   title: string;
   review: string;
   visitDate: string;
@@ -29,12 +23,6 @@ export const ReviewForm: React.FC = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState<ReviewFormData>({
     overallRating: 0,
-    serviceRating: 0,
-    cleanlinessRating: 0,
-    valueRating: 0,
-    locationRating: 0,
-    roomsRating: 0,
-    sleepQualityRating: 0,
     title: '',
     review: '',
     visitDate: '',
@@ -78,15 +66,6 @@ export const ReviewForm: React.FC = () => {
     'Solo'
   ];
 
-  const ratingCategories = [
-    { key: 'serviceRating', label: 'Service', icon: Users },
-    { key: 'cleanlinessRating', label: 'Cleanliness', icon: MapPin },
-    { key: 'valueRating', label: 'Value', icon: MapPin },
-    { key: 'locationRating', label: 'Location', icon: MapPin },
-    { key: 'roomsRating', label: 'Rooms', icon: Bed },
-    { key: 'sleepQualityRating', label: 'Sleep Quality', icon: Bed }
-  ];
-
   return (
     <div className="max-w-4xl mx-auto">
       {/* Hotel Header */}
@@ -125,14 +104,13 @@ export const ReviewForm: React.FC = () => {
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4">Rate your stay</h2>
             
-            <div className="bg-gray-50 rounded-lg p-6 mb-6">
+            <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">Overall rating</h3>
-                  <p className="text-sm text-gray-600">How was your overall experience?</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">How would you rate your experience?</h3>
                 </div>
                 <div className="flex items-center gap-3">
-                  <StarRating
+                  <CircleRating
                     rating={formData.overallRating}
                     onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
                     size={32}
@@ -148,20 +126,6 @@ export const ReviewForm: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
-
-            {/* Category Ratings */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {ratingCategories.map(({ key, label }) => (
-                <div key={key} className="flex items-center justify-between py-4 px-4 border border-gray-200 rounded-lg bg-white">
-                  <span className="font-medium text-gray-900">{label}</span>
-                  <StarRating
-                    rating={formData[key as keyof ReviewFormData] as number}
-                    onRatingChange={(rating) => setFormData(prev => ({ ...prev, [key]: rating }))}
-                    size={20}
-                  />
-                </div>
-              ))}
             </div>
           </CardContent>
         </Card>
