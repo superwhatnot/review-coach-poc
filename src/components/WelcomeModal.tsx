@@ -20,10 +20,12 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) =
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
-            Welcome to a demo of the AI assisted review coach
+            Welcome to the AI-Assisted Review Coach demo.
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-600 mt-4 leading-relaxed">
-            I won't provide any guidance. Just use the form as you normally would. Slack me (Raja) with any feedback you have. We're building this forreal and it's a fairly realistic representation of what we'll get. I built it in Lovable in a few hours with just $25 with the goal of tightening my spec and creating something interactive that can be used in UXR.
+            Use the form as you normally would — I won't give any instructions.
+            If you have feedback, Slack me (Raja). We're building this for real, and this is a pretty close representation of what the final version could look like.
+            I put it together in a few hours using Lovable (cost: $25) to help tighten the spec and give us something interactive for UXR.
           </DialogDescription>
         </DialogHeader>
         <div className="flex justify-center mt-6">
