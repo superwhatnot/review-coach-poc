@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Check } from 'lucide-react';
 import { getAllCategories } from '../services/questionBank';
 import { analyzeReviewContent } from '../utils/contentAnalysis';
 
@@ -23,22 +23,21 @@ export const AttributeDetectionPills: React.FC<AttributeDetectionPillsProps> = (
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {allCategories.map((category) => {
+    <div className="flex items-center text-sm text-gray-600 mb-3">
+      <span className="mr-2">Suggestions</span>
+      {allCategories.map((category, index) => {
         const isDetected = detectedCategoryNames.has(category);
         
         return (
-          <Badge
-            key={category}
-            variant={isDetected ? "default" : "outline"}
-            className={`text-xs px-2 py-1 ${
-              isDetected 
-                ? "bg-green-100 text-green-800 border-green-300" 
-                : "bg-gray-50 text-gray-400 border-gray-200"
-            }`}
-          >
-            {formatCategoryName(category)}
-          </Badge>
+          <React.Fragment key={category}>
+            <div className={`flex items-center ${isDetected ? 'text-green-600' : 'text-gray-600'}`}>
+              {isDetected && <Check size={16} className="mr-1" />}
+              <span>{formatCategoryName(category)}</span>
+            </div>
+            {index < allCategories.length - 1 && (
+              <span className="mx-2 text-gray-400">|</span>
+            )}
+          </React.Fragment>
         );
       })}
     </div>
