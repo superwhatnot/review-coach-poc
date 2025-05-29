@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { CircleRating } from './CircleRating';
 import { PhotoUpload } from './PhotoUpload';
@@ -40,7 +39,7 @@ export const ReviewForm: React.FC = () => {
     } else {
       setShowSayMore(false);
     }
-  }, [formData.review, showSayMore]);
+  }, [formData.review]); // Remove showSayMore from dependencies
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
