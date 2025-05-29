@@ -4,7 +4,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AttributeDetectionPills } from './AttributeDetectionPills';
-import { WritingCoachToggle } from './WritingCoachToggle';
 import { WritingAssistant } from './WritingAssistant';
 
 interface ReviewContentSectionProps {
@@ -39,11 +38,6 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   return (
     <div className="mb-6">
       <h2 className="text-xl font-semibold mb-4">Write your review</h2>
-      
-      <WritingCoachToggle
-        enabled={writingCoachEnabled}
-        onToggle={onWritingCoachToggle}
-      />
       
       <div className="space-y-4">
         <div className="relative">
