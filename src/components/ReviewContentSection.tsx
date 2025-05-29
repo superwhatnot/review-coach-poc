@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -80,21 +81,23 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             )}
           </div>
           
-          {/* Writing Assistant - positioned directly below textarea with consistent spacing */}
-          <div className="py-2">
-            <WritingAssistant
-              reviewText={review}
-              isEnabled={writingCoachEnabled}
-              getSmartQuestion={getSmartQuestion}
-              isMinimized={isWritingAssistantMinimized}
-              onMinimize={handleWritingAssistantMinimize}
-              onRestore={handleHelpMeWriteClick}
-            />
-            
-            <MinimizedWritingAssistant
-              isMinimized={isWritingAssistantMinimized}
-              onHelpMeWriteClick={handleHelpMeWriteClick}
-            />
+          {/* Writing Assistant - fixed height container to prevent layout shift */}
+          <div className="min-h-[40px] py-2 flex items-start">
+            {!isWritingAssistantMinimized ? (
+              <WritingAssistant
+                reviewText={review}
+                isEnabled={writingCoachEnabled}
+                getSmartQuestion={getSmartQuestion}
+                isMinimized={isWritingAssistantMinimized}
+                onMinimize={handleWritingAssistantMinimize}
+                onRestore={handleHelpMeWriteClick}
+              />
+            ) : (
+              <MinimizedWritingAssistant
+                isMinimized={isWritingAssistantMinimized}
+                onHelpMeWriteClick={handleHelpMeWriteClick}
+              />
+            )}
           </div>
         </div>
 
