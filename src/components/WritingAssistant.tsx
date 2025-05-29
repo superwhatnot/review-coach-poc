@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 
 interface WritingAssistantProps {
   reviewText: string;
@@ -18,10 +19,10 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   onMinimize,
   onRestore
 }) => {
-  const [showBanner, setShowBanner] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
   const [currentSuggestion, setCurrentSuggestion] = useState('');
   const [lastProcessedText, setLastProcessedText] = useState('');
+  const [isHovered, setIsHovered] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Function to check if text ends with a completed sentence
@@ -45,7 +46,7 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     return words.length >= 2;
   };
 
-  // Effect to handle showing the banner after sentence completion
+  // Effect to handle showing the prompt after sentence completion
   useEffect(() => {
     if (!isEnabled || isMinimized) {
       return;
@@ -60,20 +61,19 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     
     // Reset if text is empty
     if (text.length === 0) {
-      setShowBanner(false);
-      setIsExpanded(false);
+      setShowPrompt(false);
       setLastProcessedText('');
       return;
     }
 
     // Only trigger if we just completed a sentence and it's new content
     if (endsWithCompletedSentence(text) && text !== lastProcessedText) {
-      // Start 2-second timer to show banner
+      // Start 2-second timer to show prompt
       timeoutRef.current = setTimeout(() => {
         const suggestion = getSmartQuestion(text);
         if (suggestion && suggestion.trim()) {
           setCurrentSuggestion(suggestion);
-          setShowBanner(true);
+          setShowPrompt(true);
           setLastProcessedText(text);
         }
       }, 2000);
@@ -86,28 +86,24 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     };
   }, [reviewText, isEnabled, getSmartQuestion, lastProcessedText, isMinimized]);
 
-  // When restored from minimized state, show the banner
+  // When restored from minimized state, show the prompt
   useEffect(() => {
     if (!isMinimized && currentSuggestion) {
-      setShowBanner(true);
+      setShowPrompt(true);
     }
   }, [isMinimized, currentSuggestion]);
 
   const handleHelpMeWriteClick = () => {
-    if (!isExpanded) {
-      // If not expanded, expand and get a fresh suggestion if needed
-      if (!currentSuggestion) {
-        const suggestion = getSmartQuestion(reviewText);
-        setCurrentSuggestion(suggestion);
-      }
-      setIsExpanded(true);
-      onRestore();
+    if (!currentSuggestion) {
+      const suggestion = getSmartQuestion(reviewText);
+      setCurrentSuggestion(suggestion);
     }
+    setShowPrompt(true);
+    onRestore();
   };
 
   const handleCollapse = () => {
-    setIsExpanded(false);
-    setShowBanner(false);
+    setShowPrompt(false);
     onMinimize();
   };
 
@@ -118,44 +114,27 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     return null;
   }
 
-  // Show banner (either collapsed or expanded)
-  if (showBanner || isExpanded) {
+  // Show dynamic prompt in collapsed style
+  if (showPrompt && currentSuggestion) {
     return (
-      <div className="border border-gray-200 bg-gray-50 rounded overflow-hidden">
-        {!isExpanded ? (
-          // Collapsed banner state - very thin
-          <div className="px-3 py-1 flex items-center justify-between">
+      <div 
+        className="border border-gray-200 bg-gray-50 rounded overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="px-3 py-1 flex items-center justify-between">
+          <span className="text-gray-600 font-medium text-sm truncate pr-2">
+            {currentSuggestion}
+          </span>
+          {isHovered && (
             <button
-              onClick={handleHelpMeWriteClick}
-              className="text-gray-600 hover:text-gray-800 font-medium text-sm"
+              onClick={handleCollapse}
+              className="text-gray-400 hover:text-gray-600 text-xs flex-shrink-0"
             >
-              Help me write
+              <X size={14} />
             </button>
-            <button
-              onClick={() => setShowBanner(false)}
-              className="text-gray-400 hover:text-gray-600 text-xs"
-            >
-              ×
-            </button>
-          </div>
-        ) : (
-          // Expanded state with prompt
-          <div className="p-3">
-            <div className="flex items-start gap-3">
-              <div className="flex-1">
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {currentSuggestion}
-                </p>
-              </div>
-              <button
-                onClick={handleCollapse}
-                className="text-gray-500 hover:text-gray-700 p-1 flex-shrink-0"
-              >
-                <ArrowLeft size={16} />
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
