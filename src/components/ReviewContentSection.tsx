@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -48,6 +49,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   };
 
   const isAtTitleCharacterLimit = title.length >= 120;
+  const shouldShowMinCharacterCount = review.length < 200;
 
   return (
     <div className="mb-6">
@@ -74,7 +76,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             {/* Character count inside textarea - bottom right */}
             {isTextareaFocused && (
               <div className="absolute bottom-2 right-3 text-xs text-gray-400 pointer-events-none">
-                {review.length}/200 min
+                {shouldShowMinCharacterCount ? `${review.length}/200 min` : review.length}
               </div>
             )}
           </div>
