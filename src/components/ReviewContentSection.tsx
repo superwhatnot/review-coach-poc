@@ -15,6 +15,7 @@ interface ReviewContentSectionProps {
   showSayMore: boolean;
   sayMoreMessage: string;
   onDismissSayMore: () => void;
+  attributeDetectionText: string;
 }
 
 export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
@@ -24,7 +25,8 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   onTitleChange,
   showSayMore,
   sayMoreMessage,
-  onDismissSayMore
+  onDismissSayMore,
+  attributeDetectionText
 }) => {
   return (
     <Card>
@@ -33,7 +35,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
         
         <div className="space-y-6">
           <div>
-            <AttributeDetectionPills reviewText={review} />
+            <AttributeDetectionPills reviewText={attributeDetectionText} />
             
             <Textarea
               id="review"

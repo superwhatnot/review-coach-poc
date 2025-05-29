@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -28,6 +29,8 @@ export const ReviewForm: React.FC = () => {
   const [lastSentenceCount, setLastSentenceCount] = useState(0);
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [questionSelector] = useState(() => new EnhancedSmartQuestionSelector());
+  const [lastReviewLength, setLastReviewLength] = useState(0);
+  const [attributeDetectionText, setAttributeDetectionText] = useState('');
 
   // Function to check if text ends with a completed sentence (at least 3 words + punctuation)
   const endsWithCompletedSentence = (text: string): boolean => {
@@ -72,19 +75,29 @@ export const ReviewForm: React.FC = () => {
   // Check for sentence completion and get smart questions
   useEffect(() => {
     const text = formData.review.trim();
+    const currentLength = text.length;
+    const wasDeleted = currentLength < lastReviewLength;
     
-    // Reset banner dismissal when content changes significantly
+    // Update attribute detection when sentence is completed OR when text is deleted
     if (text.length === 0) {
       setBannerDismissed(false);
       setLastSentenceCount(0);
       questionSelector.reset();
       setShowSayMore(false);
+      setAttributeDetectionText('');
+      setLastReviewLength(0);
       return;
+    }
+
+    const justCompletedSentence = endsWithCompletedSentence(text);
+    
+    // Update attribute detection if sentence completed or text was deleted
+    if (justCompletedSentence || wasDeleted) {
+      setAttributeDetectionText(text);
     }
 
     if (!bannerDismissed) {
       const totalCompletedSentences = countCompletedSentences(text);
-      const justCompletedSentence = endsWithCompletedSentence(text);
       
       // Show banner only if we just completed a sentence and it's a new one
       if (justCompletedSentence && totalCompletedSentences > lastSentenceCount) {
@@ -102,7 +115,9 @@ export const ReviewForm: React.FC = () => {
         console.log('Current content analysis:', analysis);
       }
     }
-  }, [formData.review, lastSentenceCount, bannerDismissed, questionSelector]);
+    
+    setLastReviewLength(currentLength);
+  }, [formData.review, lastSentenceCount, bannerDismissed, questionSelector, lastReviewLength]);
 
   const handleDismissSayMore = () => {
     setShowSayMore(false);
@@ -155,6 +170,7 @@ export const ReviewForm: React.FC = () => {
           showSayMore={showSayMore}
           sayMoreMessage={currentMessage}
           onDismissSayMore={handleDismissSayMore}
+          attributeDetectionText={attributeDetectionText}
         />
 
         <Card>

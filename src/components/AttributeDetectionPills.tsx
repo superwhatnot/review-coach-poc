@@ -24,7 +24,7 @@ export const AttributeDetectionPills: React.FC<AttributeDetectionPillsProps> = (
 
   return (
     <div className="flex items-center text-sm text-gray-600 mb-3">
-      <span className="mr-2">Suggestions</span>
+      <span className="mr-2 font-bold text-gray-800">Suggestions</span>
       {allCategories.map((category, index) => {
         const isDetected = detectedCategoryNames.has(category);
         
