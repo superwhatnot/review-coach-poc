@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -48,21 +47,67 @@ export const ReviewForm: React.FC = () => {
     return words.length >= 2;
   };
 
-  // Update attribute detection when sentences are completed or content is deleted
-  useEffect(() => {
-    const text = formData.review.trim();
+  // Function to check if we're in the middle of editing an existing sentence
+  const isEditingExistingSentence = (newText: string, oldText: string): boolean => {
+    // Check if text was deleted (character removal)
+    if (newText.length < oldText.length) {
+      return true;
+    }
     
-    if (text.length === 0) {
+    // Check if text was added within an existing sentence (not at the end)
+    const newTrimmed = newText.trim();
+    const oldTrimmed = oldText.trim();
+    
+    if (newTrimmed.length > oldTrimmed.length) {
+      // Find where the new text was inserted
+      let insertionPoint = -1;
+      for (let i = 0; i < Math.min(newTrimmed.length, oldTrimmed.length); i++) {
+        if (newTrimmed[i] !== oldTrimmed[i]) {
+          insertionPoint = i;
+          break;
+        }
+      }
+      
+      // If insertion happened before the end of the old text, it's editing within a sentence
+      if (insertionPoint >= 0 && insertionPoint < oldTrimmed.length) {
+        return true;
+      }
+    }
+    
+    return false;
+  };
+
+  // Update attribute detection when sentences are completed, text is removed, or editing within sentences
+  useEffect(() => {
+    const currentText = formData.review.trim();
+    const previousText = attributeDetectionText.trim();
+    
+    console.log('Review text changed:', {
+      currentLength: currentText.length,
+      previousLength: previousText.length,
+      endsWithSentence: endsWithCompletedSentence(currentText),
+      isEditing: isEditingExistingSentence(currentText, previousText)
+    });
+    
+    if (currentText.length === 0) {
       questionSelector.reset();
       setAttributeDetectionText('');
       return;
     }
 
-    // Update attribute detection if sentence completed or text was significantly modified
-    if (endsWithCompletedSentence(text) || Math.abs(text.length - attributeDetectionText.length) > 10) {
-      setAttributeDetectionText(text);
+    // Trigger attribute detection if:
+    // 1. A sentence was completed
+    // 2. Text was removed (character deletion)
+    // 3. Text was added within an existing sentence
+    const shouldUpdateDetection = 
+      endsWithCompletedSentence(currentText) ||
+      isEditingExistingSentence(currentText, previousText);
+
+    if (shouldUpdateDetection) {
+      console.log('Updating attribute detection text');
+      setAttributeDetectionText(currentText);
     }
-  }, [formData.review, questionSelector, attributeDetectionText.length]);
+  }, [formData.review, questionSelector]);
 
   const getSmartQuestion = (text: string): string => {
     return questionSelector.getSmartQuestion(text);
