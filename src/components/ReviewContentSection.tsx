@@ -4,7 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AttributeDetectionPills } from './AttributeDetectionPills';
-import { WritingAssistant } from './WritingAssistant';
+import { WritingAssistant, MinimizedWritingAssistant } from './WritingAssistant';
 
 interface ReviewContentSectionProps {
   review: string;
@@ -28,6 +28,11 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   getSmartQuestion
 }) => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  const handleHelpMeWriteClick = () => {
+    setIsMinimized(false);
+  };
 
   return (
     <div className="mb-6">
@@ -50,19 +55,23 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             className="min-h-40 text-base mt-3"
           />
           
-          <div className="flex justify-end items-center mt-2">
+          {/* Writing Assistant - positioned directly below textarea */}
+          <WritingAssistant
+            reviewText={review}
+            isEnabled={writingCoachEnabled}
+            getSmartQuestion={getSmartQuestion}
+          />
+          
+          <div className="flex justify-between items-center mt-2">
+            <MinimizedWritingAssistant
+              isMinimized={isMinimized}
+              onHelpMeWriteClick={handleHelpMeWriteClick}
+            />
             <p className="text-sm text-gray-500">
               {review.length}/200 min characters
             </p>
           </div>
         </div>
-
-        {/* Writing Assistant - now positioned below the textarea */}
-        <WritingAssistant
-          reviewText={review}
-          isEnabled={writingCoachEnabled}
-          getSmartQuestion={getSmartQuestion}
-        />
 
         <div>
           <Label htmlFor="title" className="text-base font-medium text-gray-900 mb-2 block">

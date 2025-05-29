@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, RefreshCw } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 interface WritingAssistantProps {
   reviewText: string;
@@ -99,39 +99,23 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     setIsMinimized(true);
   };
 
-  const handleGetAnother = () => {
-    const newSuggestion = getSmartQuestion(reviewText);
-    if (newSuggestion) {
-      setCurrentSuggestion(newSuggestion);
-    }
-  };
-
   if (!isEnabled) return null;
 
-  // Minimized state - just a muted text link
+  // Minimized state - returns null to be rendered in the character count line
   if (isMinimized && !showBanner) {
-    return (
-      <div className="mt-2">
-        <button
-          onClick={handleHelpMeWriteClick}
-          className="text-sm text-gray-500 hover:text-gray-700 underline"
-        >
-          Help me write
-        </button>
-      </div>
-    );
+    return null;
   }
 
   // Show banner (either collapsed or expanded)
   if (showBanner || isExpanded) {
     return (
-      <div className="mt-3 border border-blue-200 bg-blue-50 rounded-lg overflow-hidden">
+      <div className="border border-gray-200 bg-gray-50 rounded overflow-hidden">
         {!isExpanded ? (
-          // Collapsed banner state
-          <div className="px-4 py-3 flex items-center justify-between">
+          // Collapsed banner state - very thin
+          <div className="px-3 py-1 flex items-center justify-between">
             <button
               onClick={handleHelpMeWriteClick}
-              className="text-blue-700 hover:text-blue-800 font-medium text-sm"
+              className="text-gray-600 hover:text-gray-800 font-medium text-sm"
             >
               Help me write
             </button>
@@ -144,26 +128,19 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
           </div>
         ) : (
           // Expanded state with prompt
-          <div className="p-4">
+          <div className="p-3">
             <div className="flex items-start gap-3">
+              <div className="flex-1">
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {currentSuggestion}
+                </p>
+              </div>
               <button
                 onClick={handleCollapse}
-                className="mt-1 text-gray-500 hover:text-gray-700 p-1"
+                className="text-gray-500 hover:text-gray-700 p-1 flex-shrink-0"
               >
                 <ArrowLeft size={16} />
               </button>
-              <div className="flex-1">
-                <p className="text-sm text-gray-700 mb-3 leading-relaxed">
-                  {currentSuggestion}
-                </p>
-                <button
-                  onClick={handleGetAnother}
-                  className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700"
-                >
-                  <RefreshCw size={12} />
-                  Get another suggestion
-                </button>
-              </div>
             </div>
           </div>
         )}
@@ -172,4 +149,21 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   }
 
   return null;
+};
+
+// Export a component for the minimized state to be used in the character count line
+export const MinimizedWritingAssistant: React.FC<{
+  isMinimized: boolean;
+  onHelpMeWriteClick: () => void;
+}> = ({ isMinimized, onHelpMeWriteClick }) => {
+  if (!isMinimized) return null;
+  
+  return (
+    <button
+      onClick={onHelpMeWriteClick}
+      className="text-sm text-gray-400 hover:text-gray-600 underline"
+    >
+      Help me write
+    </button>
+  );
 };
