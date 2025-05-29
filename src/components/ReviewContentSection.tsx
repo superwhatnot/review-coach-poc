@@ -29,12 +29,6 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
 }) => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
 
-  const handleSuggestionUse = (suggestion: string) => {
-    // Add a space and the suggestion to the current review
-    const newReview = review.trim() + (review.trim() ? ' ' : '') + suggestion;
-    onReviewChange(newReview);
-  };
-
   return (
     <div className="mb-6">
       <h2 className="text-xl font-semibold mb-4">Write your review</h2>
@@ -56,19 +50,19 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             className="min-h-40 text-base mt-3"
           />
           
-          <WritingAssistant
-            reviewText={review}
-            isEnabled={writingCoachEnabled}
-            onSuggestionUse={handleSuggestionUse}
-            getSmartQuestion={getSmartQuestion}
-          />
-          
           <div className="flex justify-end items-center mt-2">
             <p className="text-sm text-gray-500">
               {review.length}/200 min characters
             </p>
           </div>
         </div>
+
+        {/* Writing Assistant - now positioned below the textarea */}
+        <WritingAssistant
+          reviewText={review}
+          isEnabled={writingCoachEnabled}
+          getSmartQuestion={getSmartQuestion}
+        />
 
         <div>
           <Label htmlFor="title" className="text-base font-medium text-gray-900 mb-2 block">

@@ -1,24 +1,21 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { HelpCircle, X, RefreshCw } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { ArrowLeft, RefreshCw } from 'lucide-react';
 
 interface WritingAssistantProps {
   reviewText: string;
   isEnabled: boolean;
-  onSuggestionUse: (suggestion: string) => void;
   getSmartQuestion: (text: string) => string;
 }
 
 export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   reviewText,
   isEnabled,
-  onSuggestionUse,
   getSmartQuestion
 }) => {
-  const [showIcon, setShowIcon] = useState(false);
-  const [showPanel, setShowPanel] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [currentSuggestion, setCurrentSuggestion] = useState('');
   const [lastProcessedText, setLastProcessedText] = useState('');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -44,11 +41,9 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     return words.length >= 2;
   };
 
-  // Effect to handle pause detection after sentence completion
+  // Effect to handle showing the banner after sentence completion
   useEffect(() => {
-    if (!isEnabled) {
-      setShowIcon(false);
-      setShowPanel(false);
+    if (!isEnabled || isMinimized) {
       return;
     }
 
@@ -61,23 +56,23 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     
     // Reset if text is empty
     if (text.length === 0) {
-      setShowIcon(false);
-      setShowPanel(false);
+      setShowBanner(false);
+      setIsExpanded(false);
       setLastProcessedText('');
       return;
     }
 
     // Only trigger if we just completed a sentence and it's new content
     if (endsWithCompletedSentence(text) && text !== lastProcessedText) {
-      // Start 3-second timer
+      // Start 2-second timer to show banner
       timeoutRef.current = setTimeout(() => {
         const suggestion = getSmartQuestion(text);
         if (suggestion && suggestion.trim()) {
           setCurrentSuggestion(suggestion);
-          setShowIcon(true);
+          setShowBanner(true);
           setLastProcessedText(text);
         }
-      }, 3000);
+      }, 2000);
     }
 
     return () => {
@@ -85,16 +80,23 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [reviewText, isEnabled, getSmartQuestion, lastProcessedText]);
+  }, [reviewText, isEnabled, getSmartQuestion, lastProcessedText, isMinimized]);
 
-  const handleIconClick = () => {
-    setShowPanel(true);
-    setShowIcon(false);
+  const handleHelpMeWriteClick = () => {
+    if (!isExpanded) {
+      // If not expanded, expand and get a fresh suggestion if needed
+      if (!currentSuggestion) {
+        const suggestion = getSmartQuestion(reviewText);
+        setCurrentSuggestion(suggestion);
+      }
+      setIsExpanded(true);
+    }
   };
 
-  const handleUsePrompt = () => {
-    onSuggestionUse(currentSuggestion);
-    setShowPanel(false);
+  const handleCollapse = () => {
+    setIsExpanded(false);
+    setShowBanner(false);
+    setIsMinimized(true);
   };
 
   const handleGetAnother = () => {
@@ -104,74 +106,70 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     }
   };
 
-  const handleDismiss = () => {
-    setShowPanel(false);
-  };
-
   if (!isEnabled) return null;
 
-  return (
-    <>
-      {/* Subtle help icon */}
-      {showIcon && (
-        <div className="absolute -right-2 top-2 z-10">
-          <button
-            onClick={handleIconClick}
-            className="w-6 h-6 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg animate-pulse transition-all duration-200 hover:scale-110"
-            title="Writing suggestion available"
-          >
-            <HelpCircle size={14} />
-          </button>
-        </div>
-      )}
+  // Minimized state - just a muted text link
+  if (isMinimized && !showBanner) {
+    return (
+      <div className="mt-2">
+        <button
+          onClick={handleHelpMeWriteClick}
+          className="text-sm text-gray-500 hover:text-gray-700 underline"
+        >
+          Help me write
+        </button>
+      </div>
+    );
+  }
 
-      {/* Floating suggestion panel */}
-      {showPanel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
-            className="fixed inset-0 bg-black/20" 
-            onClick={handleDismiss}
-          />
-          <Card className="relative w-full max-w-md bg-white shadow-xl animate-scale-in">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <HelpCircle className="w-5 h-5 text-blue-600" />
-                  <span className="font-medium text-gray-900">Writing Coach</span>
-                </div>
+  // Show banner (either collapsed or expanded)
+  if (showBanner || isExpanded) {
+    return (
+      <div className="mt-3 border border-blue-200 bg-blue-50 rounded-lg overflow-hidden">
+        {!isExpanded ? (
+          // Collapsed banner state
+          <div className="px-4 py-3 flex items-center justify-between">
+            <button
+              onClick={handleHelpMeWriteClick}
+              className="text-blue-700 hover:text-blue-800 font-medium text-sm"
+            >
+              Help me write
+            </button>
+            <button
+              onClick={() => setShowBanner(false)}
+              className="text-gray-400 hover:text-gray-600 text-xs"
+            >
+              ×
+            </button>
+          </div>
+        ) : (
+          // Expanded state with prompt
+          <div className="p-4">
+            <div className="flex items-start gap-3">
+              <button
+                onClick={handleCollapse}
+                className="mt-1 text-gray-500 hover:text-gray-700 p-1"
+              >
+                <ArrowLeft size={16} />
+              </button>
+              <div className="flex-1">
+                <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                  {currentSuggestion}
+                </p>
                 <button
-                  onClick={handleDismiss}
-                  className="text-gray-400 hover:text-gray-600 p-1"
+                  onClick={handleGetAnother}
+                  className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700"
                 >
-                  <X size={16} />
+                  <RefreshCw size={12} />
+                  Get another suggestion
                 </button>
               </div>
-              
-              <p className="text-sm text-gray-700 mb-4 leading-relaxed">
-                {currentSuggestion}
-              </p>
-              
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleUsePrompt}
-                  size="sm"
-                  className="flex-1"
-                >
-                  Use this prompt
-                </Button>
-                <Button
-                  onClick={handleGetAnother}
-                  variant="outline"
-                  size="sm"
-                  className="px-3"
-                >
-                  <RefreshCw size={14} />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </>
-  );
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return null;
 };
