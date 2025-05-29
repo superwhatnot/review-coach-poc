@@ -32,9 +32,6 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
         
         <div className="space-y-6">
           <div>
-            <Label htmlFor="review" className="text-base font-medium text-gray-900 mb-2 block">
-              Your review
-            </Label>
             <Textarea
               id="review"
               placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
