@@ -25,11 +25,12 @@ export const ReviewForm: React.FC = () => {
     photos: []
   });
   const [showSayMore, setShowSayMore] = useState(false);
+  const [sayMoreDismissed, setSayMoreDismissed] = useState(false);
 
   // Check for sentence completion (punctuation marks)
   useEffect(() => {
     const text = formData.review.trim();
-    if (text.length > 0) {
+    if (text.length > 0 && !sayMoreDismissed) {
       const lastChar = text[text.length - 1];
       const hasSentenceEnding = /[.!?]/.test(lastChar);
       
@@ -39,7 +40,12 @@ export const ReviewForm: React.FC = () => {
     } else {
       setShowSayMore(false);
     }
-  }, [formData.review]); // Remove showSayMore from dependencies
+  }, [formData.review, sayMoreDismissed]);
+
+  const handleDismissSayMore = () => {
+    setShowSayMore(false);
+    setSayMoreDismissed(true);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,7 +148,7 @@ export const ReviewForm: React.FC = () => {
                       <span className="text-blue-700 font-medium">Say more</span>
                       <button
                         type="button"
-                        onClick={() => setShowSayMore(false)}
+                        onClick={handleDismissSayMore}
                         className="text-blue-500 hover:text-blue-700 p-1"
                       >
                         <X size={14} />
