@@ -1,9 +1,10 @@
 
 import { questionBank, getQuestionsByCategory } from './questionBank';
 import { detectTopicFromText, getLastSentence } from '../utils/topicDetection';
+import { findLeastSimilarQuestion } from '../utils/textSimilarity';
 
 interface QuestionState {
-  [categoryName: string]: number; // Index of last question shown for each category
+  [categoryName: string]: number[]; // Array of question indices already shown for each category
 }
 
 const fallbackMessages = [
@@ -43,16 +44,35 @@ export class SmartQuestionSelector {
       return this.getFallbackMessage();
     }
     
-    // Get the next question for this category
-    const currentIndex = this.questionState[detectedTopic] || 0;
-    const question = questions[currentIndex % questions.length];
+    // Initialize question state for this category if not exists
+    if (!this.questionState[detectedTopic]) {
+      this.questionState[detectedTopic] = [];
+    }
     
-    // Update the index for next time
-    this.questionState[detectedTopic] = currentIndex + 1;
+    const usedIndices = this.questionState[detectedTopic];
     
-    console.log(`Detected topic: ${detectedTopic}, Selected question: "${question}"`);
+    // If all questions have been used, reset and start over
+    if (usedIndices.length >= questions.length) {
+      this.questionState[detectedTopic] = [];
+    }
     
-    return question;
+    // Find the least similar question that hasn't been used yet
+    const selectedQuestion = findLeastSimilarQuestion(
+      lastSentence, 
+      questions, 
+      this.questionState[detectedTopic]
+    );
+    
+    if (!selectedQuestion) {
+      return this.getFallbackMessage();
+    }
+    
+    // Mark this question index as used
+    this.questionState[detectedTopic].push(selectedQuestion.index);
+    
+    console.log(`Detected topic: ${detectedTopic}, Selected question: "${selectedQuestion.question}" (similarity: ${selectedQuestion.score.toFixed(3)})`);
+    
+    return selectedQuestion.question;
   }
   
   private getFallbackMessage(): string {
