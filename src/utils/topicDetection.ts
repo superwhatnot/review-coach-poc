@@ -21,6 +21,8 @@ const contextualPatterns: ContextualPattern[] = [
       { words: ['driving', 'drive'], context: ['easy', 'convenient', 'accessible', 'parking'], sentiment: 'positive', weight: 3 },
       { words: ['location', 'area', 'neighborhood'], context: ['good', 'great', 'perfect', 'convenient'], sentiment: 'positive', weight: 3 },
       { words: ['airport', 'station'], context: ['close', 'near', 'convenient', 'easy'], sentiment: 'positive', weight: 3 },
+      { words: ['convenience', 'convenient'], context: ['to', 'downtown', 'city', 'center', 'area'], sentiment: 'positive', weight: 4 },
+      { words: ['downtown', 'city center', 'center'], context: ['close', 'near', 'convenient', 'easy', 'to'], sentiment: 'positive', weight: 3 },
       { words: ['getting', 'reach', 'access'], context: ['to', 'from', 'around', 'easy', 'difficult'], weight: 2 },
       { words: ['nearby', 'around', 'close', 'distance'], weight: 2 }
     ]

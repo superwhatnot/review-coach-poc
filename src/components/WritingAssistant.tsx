@@ -114,22 +114,22 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     return null;
   }
 
-  // Show dynamic prompt in collapsed style
+  // Show dynamic prompt as simple light grey text
   if (showPrompt && currentSuggestion) {
     return (
       <div 
-        className="border border-gray-200 bg-gray-50 rounded overflow-hidden"
+        className="py-2"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="px-3 py-1 flex items-center justify-between">
-          <span className="text-gray-600 font-medium text-sm truncate pr-2">
+        <div className="flex items-center justify-between">
+          <span className="text-gray-400 text-sm">
             {currentSuggestion}
           </span>
           {isHovered && (
             <button
               onClick={handleCollapse}
-              className="text-gray-400 hover:text-gray-600 text-xs flex-shrink-0"
+              className="text-gray-400 hover:text-gray-600 text-xs flex-shrink-0 ml-2"
             >
               <X size={14} />
             </button>
