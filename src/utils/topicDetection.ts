@@ -6,6 +6,8 @@ export const detectTopicFromText = (text: string): string | null => {
   
   if (!normalizedText) return null;
   
+  console.log(`Analyzing text for topic detection: "${normalizedText}"`);
+  
   // Score each category based on keyword matches
   const categoryScores: { [key: string]: number } = {};
   
@@ -24,6 +26,10 @@ export const detectTopicFromText = (text: string): string | null => {
       if (normalizedText.includes(keywordLower)) {
         score += 1;
       }
+      
+      if (exactMatches > 0 || normalizedText.includes(keywordLower)) {
+        console.log(`Keyword "${keyword}" matched in category ${category.name}, score: ${score}`);
+      }
     }
     
     if (score > 0) {
@@ -31,11 +37,16 @@ export const detectTopicFromText = (text: string): string | null => {
     }
   }
   
+  console.log('Category scores:', categoryScores);
+  
   // Return the category with the highest score
   const sortedCategories = Object.entries(categoryScores)
     .sort(([, a], [, b]) => b - a);
   
-  return sortedCategories.length > 0 ? sortedCategories[0][0] : null;
+  const detectedCategory = sortedCategories.length > 0 ? sortedCategories[0][0] : null;
+  console.log(`Detected category: ${detectedCategory}`);
+  
+  return detectedCategory;
 };
 
 export const getLastSentence = (text: string): string => {
@@ -53,6 +64,8 @@ export const getLastSentence = (text: string): string => {
   const lastSentence = lastPunctuationIndex >= 0 
     ? trimmed.substring(lastPunctuationIndex + 1, trimmed.length - 1).trim()
     : trimmed.substring(0, trimmed.length - 1).trim();
+  
+  console.log(`Extracted last sentence: "${lastSentence}"`);
   
   return lastSentence;
 };

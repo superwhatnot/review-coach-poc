@@ -8,7 +8,7 @@ export interface QuestionCategory {
 export const questionBank: QuestionCategory[] = [
   {
     name: 'LOCATION',
-    keywords: ['location', 'area', 'neighborhood', 'nearby', 'around', 'walking', 'driving', 'transit', 'transportation', 'distance', 'close', 'far', 'convenient', 'getting to', 'getting around'],
+    keywords: ['location', 'area', 'neighborhood', 'nearby', 'around', 'walking', 'driving', 'transit', 'transportation', 'distance', 'close', 'far', 'convenient', 'getting to', 'getting around', 'airport', 'access', 'accessible', 'proximity', 'commute', 'travel', 'reach', 'reachable'],
     questions: [
       "What made the location a good fit (or not) for your trip?",
       "How was it getting to the hotel from wherever you came from?",
