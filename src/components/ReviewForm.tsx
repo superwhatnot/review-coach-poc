@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -6,6 +7,7 @@ import { RatingSection } from './RatingSection';
 import { ReviewContentSection } from './ReviewContentSection';
 import { SubmitSection } from './SubmitSection';
 import { Card, CardContent } from '@/components/ui/card';
+import { SmartQuestionSelector } from '../services/smartQuestions';
 
 interface ReviewFormData {
   overallRating: number;
@@ -13,17 +15,6 @@ interface ReviewFormData {
   review: string;
   photos: File[];
 }
-
-const encouragingMessages = [
-  "Say more",
-  "Tell us more!",
-  "Keep going!",
-  "What else?",
-  "Share more details",
-  "Continue your story",
-  "Add more insights",
-  "We'd love to hear more"
-];
 
 export const ReviewForm: React.FC = () => {
   const { toast } = useToast();
@@ -34,9 +25,10 @@ export const ReviewForm: React.FC = () => {
     photos: []
   });
   const [showSayMore, setShowSayMore] = useState(false);
-  const [messageIndex, setMessageIndex] = useState(0);
+  const [currentMessage, setCurrentMessage] = useState('');
   const [lastSentenceCount, setLastSentenceCount] = useState(0);
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [questionSelector] = useState(() => new SmartQuestionSelector());
 
   // Function to check if text ends with a completed sentence (at least 3 words + punctuation)
   const endsWithCompletedSentence = (text: string): boolean => {
@@ -78,7 +70,7 @@ export const ReviewForm: React.FC = () => {
     return count;
   };
 
-  // Check for sentence completion and cycle messages
+  // Check for sentence completion and get smart questions
   useEffect(() => {
     const text = formData.review.trim();
     if (text.length > 0 && !bannerDismissed) {
@@ -88,25 +80,26 @@ export const ReviewForm: React.FC = () => {
       // Show banner only if we just completed a sentence and it's a new one
       if (justCompletedSentence && totalCompletedSentences > lastSentenceCount) {
         setLastSentenceCount(totalCompletedSentences);
-        setMessageIndex(totalCompletedSentences - 1); // Use 0-based index
+        
+        // Get smart question based on the content
+        const smartQuestion = questionSelector.getSmartQuestion(text);
+        setCurrentMessage(smartQuestion);
         setShowSayMore(true);
         
-        console.log(`New real sentence completed! Count: ${totalCompletedSentences}, Message: "${encouragingMessages[totalCompletedSentences - 1]}"`);
+        console.log(`New sentence completed! Count: ${totalCompletedSentences}, Smart question: "${smartQuestion}"`);
       }
     } else {
       setShowSayMore(false);
       setLastSentenceCount(0);
-      setMessageIndex(0);
+      if (text.length === 0) {
+        questionSelector.reset();
+      }
     }
-  }, [formData.review, lastSentenceCount, bannerDismissed]);
+  }, [formData.review, lastSentenceCount, bannerDismissed, questionSelector]);
 
   const handleDismissSayMore = () => {
     setShowSayMore(false);
     setBannerDismissed(true);
-  };
-
-  const getCurrentMessage = () => {
-    return encouragingMessages[messageIndex % encouragingMessages.length];
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -153,7 +146,7 @@ export const ReviewForm: React.FC = () => {
           onReviewChange={(review) => setFormData(prev => ({ ...prev, review }))}
           onTitleChange={(title) => setFormData(prev => ({ ...prev, title }))}
           showSayMore={showSayMore}
-          sayMoreMessage={getCurrentMessage()}
+          sayMoreMessage={currentMessage}
           onDismissSayMore={handleDismissSayMore}
         />
 
