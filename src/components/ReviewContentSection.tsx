@@ -65,7 +65,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             {/* Character count inside textarea - bottom right */}
             {isTextareaFocused && (
               <div className="absolute bottom-2 right-3 text-xs text-gray-400 pointer-events-none">
-                {review.length}
+                {review.length}/200 min
               </div>
             )}
           </div>
