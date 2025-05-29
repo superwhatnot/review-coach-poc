@@ -74,7 +74,13 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             className="text-base"
+            maxLength={120}
           />
+          <div className="flex justify-end items-center mt-2">
+            <p className="text-sm text-gray-500">
+              {title.length}/120 max characters
+            </p>
+          </div>
         </div>
       </div>
     </div>
