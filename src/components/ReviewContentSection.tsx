@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SayMoreBanner } from './SayMoreBanner';
+import { AttributeDetectionPills } from './AttributeDetectionPills';
 
 interface ReviewContentSectionProps {
   review: string;
@@ -47,8 +48,9 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
               />
             )}
             
-            <div className="flex justify-end items-center mt-2">
-              <p className="text-sm text-gray-500">
+            <div className="flex justify-between items-start mt-3">
+              <AttributeDetectionPills reviewText={review} />
+              <p className="text-sm text-gray-500 flex-shrink-0 ml-4">
                 {review.length}/200 min characters
               </p>
             </div>
