@@ -1,13 +1,12 @@
+
 import React, { useState, useEffect } from 'react';
-import { CircleRating } from './CircleRating';
 import { PhotoUpload } from './PhotoUpload';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { HotelHeader } from './HotelHeader';
+import { RatingSection } from './RatingSection';
+import { ReviewContentSection } from './ReviewContentSection';
+import { SubmitSection } from './SubmitSection';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ReviewFormData {
   overallRating: number;
@@ -97,110 +96,24 @@ export const ReviewForm: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Hotel Header */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-        <div className="flex items-start gap-4">
-          <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-            <img 
-              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=80&h=80&fit=crop&crop=center" 
-              alt="Hotel" 
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Club Hotel Marina Beach</h1>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <MapPin className="w-4 h-4" />
-              <span>Marina di Orosei, Orosei, Province of Nuoro, Sardinia, Italy</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <HotelHeader />
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Overall Rating */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4">How would you rate your experience?</h2>
-            
-            <div className="flex items-center justify-between">
-              <CircleRating
-                rating={formData.overallRating}
-                onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
-                size={32}
-              />
-              {formData.overallRating > 0 && (
-                <span className="text-lg font-medium text-gray-700 min-w-24">
-                  {formData.overallRating === 1 && "Terrible"}
-                  {formData.overallRating === 2 && "Poor"}
-                  {formData.overallRating === 3 && "Average"}
-                  {formData.overallRating === 4 && "Very Good"}
-                  {formData.overallRating === 5 && "Excellent"}
-                </span>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <RatingSection
+          rating={formData.overallRating}
+          onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
+        />
 
-        {/* Review Content */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Write your review</h2>
-            
-            <div className="space-y-6">
-              <div className="relative">
-                <Label htmlFor="review" className="text-base font-medium text-gray-900 mb-2 block">
-                  Your review
-                </Label>
-                <div className="relative">
-                  <Textarea
-                    id="review"
-                    placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
-                    value={formData.review}
-                    onChange={(e) => setFormData(prev => ({ ...prev, review: e.target.value }))}
-                    className="min-h-40 text-base resize-none"
-                    rows={8}
-                  />
-                  
-                  {/* Say More Banner */}
-                  {showSayMore && (
-                    <div className="absolute bottom-2 left-2 right-2 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 flex items-center justify-between text-sm">
-                      <span className="text-blue-700 font-medium">{getCurrentMessage()}</span>
-                      <button
-                        type="button"
-                        onClick={handleDismissSayMore}
-                        className="text-blue-500 hover:text-blue-700 p-1"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex justify-end items-center mt-2">
-                  <p className="text-sm text-gray-500">
-                    {formData.review.length}/200 min characters
-                  </p>
-                </div>
-              </div>
+        <ReviewContentSection
+          review={formData.review}
+          title={formData.title}
+          onReviewChange={(review) => setFormData(prev => ({ ...prev, review }))}
+          onTitleChange={(title) => setFormData(prev => ({ ...prev, title }))}
+          showSayMore={showSayMore}
+          sayMoreMessage={getCurrentMessage()}
+          onDismissSayMore={handleDismissSayMore}
+        />
 
-              <div>
-                <Label htmlFor="title" className="text-base font-medium text-gray-900 mb-2 block">
-                  Title of your review
-                </Label>
-                <Input
-                  id="title"
-                  placeholder="Summarize your visit or highlight an interesting detail"
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  className="text-base"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Photo Upload */}
         <Card>
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4">Add some photos</h2>
@@ -210,36 +123,7 @@ export const ReviewForm: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Submit Section */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div className="text-sm text-gray-600 max-w-md">
-                <p className="mb-2">
-                  <strong>A few reminders:</strong>
-                </p>
-                <ul className="list-disc list-inside space-y-1 text-xs">
-                  <li>Your review should be about your own experience</li>
-                  <li>Please check your spelling and grammar</li>
-                  <li>Reviews must be at least 200 characters</li>
-                  <li>Don't include personal details like email addresses</li>
-                </ul>
-              </div>
-              <div className="flex gap-3">
-                <Button variant="outline" type="button" size="lg">
-                  Save Draft
-                </Button>
-                <Button 
-                  type="submit" 
-                  size="lg"
-                  className="bg-black hover:bg-gray-800 text-white px-8"
-                >
-                  Submit review
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <SubmitSection onSubmit={handleSubmit} />
       </form>
     </div>
   );

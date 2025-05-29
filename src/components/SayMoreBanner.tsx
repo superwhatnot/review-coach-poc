@@ -1,0 +1,23 @@
+
+import React from 'react';
+import { X } from 'lucide-react';
+
+interface SayMoreBannerProps {
+  message: string;
+  onDismiss: () => void;
+}
+
+export const SayMoreBanner: React.FC<SayMoreBannerProps> = ({ message, onDismiss }) => {
+  return (
+    <div className="absolute bottom-2 left-2 right-2 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 flex items-center justify-between text-sm">
+      <span className="text-blue-700 font-medium">{message}</span>
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="text-blue-500 hover:text-blue-700 p-1"
+      >
+        <X size={14} />
+      </button>
+    </div>
+  );
+};
