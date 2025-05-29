@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -36,11 +37,12 @@ export const ReviewForm: React.FC = () => {
   const [showSayMore, setShowSayMore] = useState(false);
   const [messageIndex, setMessageIndex] = useState(0);
   const [lastSentenceCount, setLastSentenceCount] = useState(0);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   // Check for sentence completion and cycle messages
   useEffect(() => {
     const text = formData.review.trim();
-    if (text.length > 0) {
+    if (text.length > 0 && !bannerDismissed) {
       // Count completed sentences (ending with punctuation)
       const completedSentences = (text.match(/[.!?]/g) || []).length;
       
@@ -57,10 +59,11 @@ export const ReviewForm: React.FC = () => {
       setLastSentenceCount(0);
       setMessageIndex(0);
     }
-  }, [formData.review, lastSentenceCount]);
+  }, [formData.review, lastSentenceCount, bannerDismissed]);
 
   const handleDismissSayMore = () => {
     setShowSayMore(false);
+    setBannerDismissed(true);
   };
 
   const getCurrentMessage = () => {
