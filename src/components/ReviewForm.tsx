@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -39,36 +38,60 @@ export const ReviewForm: React.FC = () => {
   const [lastSentenceCount, setLastSentenceCount] = useState(0);
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
-  // Function to detect real sentences (at least 3 words ending with punctuation)
-  const countRealSentences = (text: string): number => {
-    // Split text by sentence-ending punctuation
-    const potentialSentences = text.split(/[.!?]+/);
-    let realSentenceCount = 0;
+  // Function to check if text ends with a completed sentence (at least 3 words + punctuation)
+  const endsWithCompletedSentence = (text: string): boolean => {
+    const trimmed = text.trim();
+    if (trimmed.length === 0) return false;
     
-    for (const sentence of potentialSentences) {
+    // Check if it ends with punctuation
+    if (!/[.!?]$/.test(trimmed)) return false;
+    
+    // Find the last sentence by splitting from the end
+    const lastPunctuationIndex = Math.max(
+      trimmed.lastIndexOf('.', trimmed.length - 2),
+      trimmed.lastIndexOf('!', trimmed.length - 2),
+      trimmed.lastIndexOf('?', trimmed.length - 2)
+    );
+    
+    // Get the last sentence (everything after the last punctuation, or the whole text if no previous punctuation)
+    const lastSentence = lastPunctuationIndex >= 0 
+      ? trimmed.substring(lastPunctuationIndex + 1, trimmed.length - 1).trim()
+      : trimmed.substring(0, trimmed.length - 1).trim();
+    
+    // Check if the last sentence has at least 3 words
+    const words = lastSentence.split(/\s+/).filter(word => word.length > 0);
+    return words.length >= 3;
+  };
+
+  // Function to count total completed sentences
+  const countCompletedSentences = (text: string): number => {
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    let count = 0;
+    
+    for (const sentence of sentences) {
       const words = sentence.trim().split(/\s+/).filter(word => word.length > 0);
-      // Count as a real sentence if it has at least 3 words
       if (words.length >= 3) {
-        realSentenceCount++;
+        count++;
       }
     }
     
-    return realSentenceCount;
+    return count;
   };
 
   // Check for sentence completion and cycle messages
   useEffect(() => {
     const text = formData.review.trim();
     if (text.length > 0 && !bannerDismissed) {
-      const completedSentences = countRealSentences(text);
+      const totalCompletedSentences = countCompletedSentences(text);
+      const justCompletedSentence = endsWithCompletedSentence(text);
       
-      // Check if we just completed a new real sentence
-      if (completedSentences > lastSentenceCount) {
-        setLastSentenceCount(completedSentences);
-        setMessageIndex(completedSentences - 1); // Use 0-based index
+      // Show banner only if we just completed a sentence and it's a new one
+      if (justCompletedSentence && totalCompletedSentences > lastSentenceCount) {
+        setLastSentenceCount(totalCompletedSentences);
+        setMessageIndex(totalCompletedSentences - 1); // Use 0-based index
         setShowSayMore(true);
         
-        console.log(`New real sentence completed! Count: ${completedSentences}, Message: "${encouragingMessages[completedSentences - 1]}"`);
+        console.log(`New real sentence completed! Count: ${totalCompletedSentences}, Message: "${encouragingMessages[totalCompletedSentences - 1]}"`);
       }
     } else {
       setShowSayMore(false);
