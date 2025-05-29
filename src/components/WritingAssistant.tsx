@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface WritingAssistantProps {
   reviewText: string;
@@ -174,9 +173,10 @@ export const MinimizedWritingAssistant: React.FC<{
   return (
     <button
       onClick={onHelpMeWriteClick}
-      className="text-sm text-gray-400 hover:text-gray-600 underline"
+      className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1"
     >
       Help me write
+      <ArrowRight size={14} />
     </button>
   );
 };
