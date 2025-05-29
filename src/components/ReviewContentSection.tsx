@@ -33,12 +33,14 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
         
         <div className="space-y-6">
           <div>
+            <AttributeDetectionPills reviewText={review} />
+            
             <Textarea
               id="review"
               placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
               value={review}
               onChange={(e) => onReviewChange(e.target.value)}
-              className="min-h-40 text-base"
+              className="min-h-40 text-base mt-3"
             />
             
             {showSayMore && (
@@ -48,9 +50,8 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
               />
             )}
             
-            <div className="flex justify-between items-start mt-3">
-              <AttributeDetectionPills reviewText={review} />
-              <p className="text-sm text-gray-500 flex-shrink-0 ml-4">
+            <div className="flex justify-end items-center mt-2">
+              <p className="text-sm text-gray-500">
                 {review.length}/200 min characters
               </p>
             </div>

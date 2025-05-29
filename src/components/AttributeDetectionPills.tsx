@@ -23,27 +23,24 @@ export const AttributeDetectionPills: React.FC<AttributeDetectionPillsProps> = (
   };
 
   return (
-    <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-700">Topics covered</h3>
-      <div className="flex flex-wrap gap-2">
-        {allCategories.map((category) => {
-          const isDetected = detectedCategoryNames.has(category);
-          
-          return (
-            <Badge
-              key={category}
-              variant={isDetected ? "default" : "outline"}
-              className={`text-xs px-2 py-1 ${
-                isDetected 
-                  ? "bg-green-100 text-green-800 border-green-300" 
-                  : "bg-gray-50 text-gray-400 border-gray-200"
-              }`}
-            >
-              {formatCategoryName(category)}
-            </Badge>
-          );
-        })}
-      </div>
+    <div className="flex flex-wrap gap-2">
+      {allCategories.map((category) => {
+        const isDetected = detectedCategoryNames.has(category);
+        
+        return (
+          <Badge
+            key={category}
+            variant={isDetected ? "default" : "outline"}
+            className={`text-xs px-2 py-1 ${
+              isDetected 
+                ? "bg-green-100 text-green-800 border-green-300" 
+                : "bg-gray-50 text-gray-400 border-gray-200"
+            }`}
+          >
+            {formatCategoryName(category)}
+          </Badge>
+        );
+      })}
     </div>
   );
 };
