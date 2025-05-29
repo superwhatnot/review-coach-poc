@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -28,6 +28,8 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   onDismissSayMore,
   attributeDetectionText
 }) => {
+  const [isTextareaFocused, setIsTextareaFocused] = useState(false);
+
   return (
     <Card>
       <CardContent className="p-6">
@@ -35,13 +37,18 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
         
         <div className="space-y-6">
           <div>
-            <AttributeDetectionPills reviewText={attributeDetectionText} />
+            <AttributeDetectionPills 
+              reviewText={attributeDetectionText} 
+              isVisible={isTextareaFocused}
+            />
             
             <Textarea
               id="review"
               placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
               value={review}
               onChange={(e) => onReviewChange(e.target.value)}
+              onFocus={() => setIsTextareaFocused(true)}
+              onBlur={() => setIsTextareaFocused(false)}
               className="min-h-40 text-base mt-3"
             />
             
