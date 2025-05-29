@@ -102,7 +102,9 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     onRestore();
   };
 
-  const handleCollapse = () => {
+  const handleCollapse = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setShowPrompt(false);
     onMinimize();
   };
