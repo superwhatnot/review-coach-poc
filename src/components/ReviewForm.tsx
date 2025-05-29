@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -32,7 +31,7 @@ export const ReviewForm: React.FC = () => {
   const [lastReviewLength, setLastReviewLength] = useState(0);
   const [attributeDetectionText, setAttributeDetectionText] = useState('');
 
-  // Function to check if text ends with a completed sentence (at least 3 words + punctuation)
+  // Function to check if text ends with a completed sentence (at least 2 words + punctuation)
   const endsWithCompletedSentence = (text: string): boolean => {
     const trimmed = text.trim();
     if (trimmed.length === 0) return false;
@@ -52,9 +51,9 @@ export const ReviewForm: React.FC = () => {
       ? trimmed.substring(lastPunctuationIndex + 1, trimmed.length - 1).trim()
       : trimmed.substring(0, trimmed.length - 1).trim();
     
-    // Check if the last sentence has at least 3 words
+    // Check if the last sentence has at least 2 words
     const words = lastSentence.split(/\s+/).filter(word => word.length > 0);
-    return words.length >= 3;
+    return words.length >= 2;
   };
 
   // Function to count total completed sentences
@@ -64,7 +63,7 @@ export const ReviewForm: React.FC = () => {
     
     for (const sentence of sentences) {
       const words = sentence.trim().split(/\s+/).filter(word => word.length > 0);
-      if (words.length >= 3) {
+      if (words.length >= 2) {
         count++;
       }
     }
