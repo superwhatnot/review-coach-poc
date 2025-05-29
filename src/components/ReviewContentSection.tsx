@@ -42,7 +42,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
           
           <Textarea
             id="review"
-            placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
+            placeholder="The pillows are the fluffiest I've ever felt..."
             value={review}
             onChange={(e) => onReviewChange(e.target.value)}
             onFocus={() => setIsTextareaFocused(true)}
@@ -70,7 +70,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
           </Label>
           <Input
             id="title"
-            placeholder="Summarize your visit or highlight an interesting detail"
+            placeholder="Give us the gist of your experience"
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             className="text-base"
