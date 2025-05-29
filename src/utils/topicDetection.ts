@@ -80,6 +80,7 @@ const contextualPatterns: ContextualPattern[] = [
     category: 'AMENITIES',
     patterns: [
       { words: ['pool', 'gym', 'spa', 'restaurant', 'bar'], weight: 4 },
+      { words: ['shuttle', 'shuttles'], weight: 4 },
       { words: ['parking', 'wifi', 'internet'], weight: 3 },
       { words: ['breakfast'], weight: 3 },
       { words: ['amenities', 'facilities'], weight: 2 }
