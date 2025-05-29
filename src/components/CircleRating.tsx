@@ -13,7 +13,7 @@ export const CircleRating: React.FC<CircleRatingProps> = ({
   rating,
   onRatingChange,
   onHoverChange,
-  size = 24,
+  size = 40,
   className = ""
 }) => {
   const [hoverRating, setHoverRating] = useState(0);
@@ -29,7 +29,7 @@ export const CircleRating: React.FC<CircleRatingProps> = ({
   };
 
   return (
-    <div className={`flex gap-1 ${className}`}>
+    <div className={`flex gap-0.5 ${className}`}>
       {[1, 2, 3, 4, 5].map((circle) => (
         <button
           key={circle}

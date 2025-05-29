@@ -35,10 +35,10 @@ export const RatingSection: React.FC<RatingSectionProps> = ({ rating, onRatingCh
             rating={rating}
             onRatingChange={onRatingChange}
             onHoverChange={setHoverRating}
-            size={24}
+            size={40}
           />
           {shouldShowLabel && (
-            <span className="text-lg font-medium text-gray-700">
+            <span className="text-lg text-gray-700">
               {getRatingLabel(displayRating)}
             </span>
           )}
