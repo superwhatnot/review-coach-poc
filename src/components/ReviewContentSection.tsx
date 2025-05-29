@@ -38,6 +38,16 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
     setIsWritingAssistantMinimized(true);
   };
 
+  const handleReviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    // Only allow up to 200 characters (the minimum length mentioned in the placeholder)
+    if (newValue.length <= 200) {
+      onReviewChange(newValue);
+    }
+  };
+
+  const isAtCharacterLimit = review.length >= 200;
+
   return (
     <div className="mb-6">
       <h2 className="text-xl font-semibold mb-4">Write your review</h2>
@@ -54,16 +64,16 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
               id="review"
               placeholder="The pillows are the fluffiest I've ever felt..."
               value={review}
-              onChange={(e) => onReviewChange(e.target.value)}
+              onChange={handleReviewChange}
               onFocus={() => setIsTextareaFocused(true)}
               onBlur={() => setIsTextareaFocused(false)}
               className="min-h-40 text-base mt-3 pr-20"
             />
             
-            {/* Character count inside textarea - bottom right */}
-            {isTextareaFocused && (
+            {/* Character count inside textarea - bottom right - only show when at limit */}
+            {isTextareaFocused && isAtCharacterLimit && (
               <div className="absolute bottom-2 right-3 text-xs text-gray-400 pointer-events-none">
-                {review.length}/200 min
+                200/200 min
               </div>
             )}
           </div>
