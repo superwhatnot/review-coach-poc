@@ -117,15 +117,26 @@ export class SmartQuestionSelector {
     this.reset();
     
     // Try again with the first category
-    const firstCategory = allCategories[0];
-    const question = this.getQuestionFromCategory(firstCategory, '');
-    if (question) {
-      this.categoriesWithShownQuestions.add(firstCategory);
-      return question;
+    if (allCategories.length > 0) {
+      const firstCategory = allCategories[0];
+      const question = this.getQuestionFromCategory(firstCategory, '');
+      if (question) {
+        this.categoriesWithShownQuestions.add(firstCategory);
+        return question;
+      }
     }
     
-    // Final fallback - this should never happen if question bank is properly configured
-    return "Tell us more about your experience.";
+    // Final fallback - get any available question from any category
+    for (const category of allCategories) {
+      const questions = getQuestionsByCategory(category);
+      if (questions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * questions.length);
+        return questions[randomIndex];
+      }
+    }
+    
+    // This should never happen if question bank is properly configured
+    return "What else would you like to share about your experience?";
   }
   
   reset(): void {
