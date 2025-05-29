@@ -1,4 +1,3 @@
-
 import { questionBank, getQuestionsByCategory, getAllCategories } from './questionBank';
 import { detectTopicFromText, getLastSentence } from '../utils/topicDetection';
 import { findLeastSimilarQuestion } from '../utils/textSimilarity';
@@ -19,14 +18,15 @@ export class SmartQuestionSelector {
       return this.getQuestionFromUnvisitedCategory();
     }
     
-    // Detect the topic of the last sentence
-    const detectedTopic = detectTopicFromText(lastSentence);
+    // Detect the topics of the last sentence (now returns an array)
+    const detectedTopics = detectTopicFromText(lastSentence);
     
-    if (detectedTopic) {
-      // We have a detected topic, try to get a question from it
-      const question = this.getQuestionFromCategory(detectedTopic, lastSentence);
+    if (detectedTopics.length > 0) {
+      // Try to get a question from the first detected topic
+      const firstTopic = detectedTopics[0];
+      const question = this.getQuestionFromCategory(firstTopic, lastSentence);
       if (question) {
-        this.categoriesWithShownQuestions.add(detectedTopic);
+        this.categoriesWithShownQuestions.add(firstTopic);
         return question;
       }
     }
@@ -35,6 +35,7 @@ export class SmartQuestionSelector {
     // Get a question from a category we haven't shown questions from yet
     return this.getQuestionFromUnvisitedCategory();
   }
+  
   
   private getQuestionFromCategory(categoryName: string, lastSentence: string): string | null {
     const questions = getQuestionsByCategory(categoryName);

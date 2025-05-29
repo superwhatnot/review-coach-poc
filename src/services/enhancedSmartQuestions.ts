@@ -1,4 +1,3 @@
-
 import { questionBank, getQuestionsByCategory, getAllCategories } from './questionBank';
 import { detectTopicFromText, getLastSentence } from '../utils/topicDetection';
 import { findLeastSimilarQuestion } from '../utils/textSimilarity';
@@ -40,26 +39,30 @@ export class EnhancedSmartQuestionSelector {
       return this.getQuestionFromUncoveredCategory();
     }
     
-    // Detect the topic of the last sentence
-    const detectedTopic = detectTopicFromText(lastSentence);
+    // Detect the topics of the last sentence (now returns an array)
+    const detectedTopics = detectTopicFromText(lastSentence);
     
-    if (detectedTopic) {
-      // Check if this topic is already well-covered in the review
-      const isWellCovered = isTopicWellCovered(detectedTopic, this.coveredTopics);
-      
-      if (!isWellCovered) {
-        // Topic is relevant and not well-covered, get a question from it
-        const question = this.getQuestionFromCategory(detectedTopic, lastSentence);
-        if (question) {
-          console.log(`Selected question from detected but not well-covered topic: ${detectedTopic}`);
-          return question;
+    if (detectedTopics.length > 0) {
+      // Check each detected topic to find one that's not well-covered
+      for (const topic of detectedTopics) {
+        const isWellCovered = isTopicWellCovered(topic, this.coveredTopics);
+        
+        if (!isWellCovered) {
+          // Topic is relevant and not well-covered, get a question from it
+          const question = this.getQuestionFromCategory(topic, lastSentence);
+          if (question) {
+            console.log(`Selected question from detected but not well-covered topic: ${topic}`);
+            return question;
+          }
+        } else {
+          console.log(`Topic ${topic} is already well-covered, checking other detected topics`);
         }
-      } else {
-        console.log(`Topic ${detectedTopic} is already well-covered, looking for uncovered topics`);
       }
+      
+      console.log('All detected topics are well-covered, looking for uncovered topics');
     }
     
-    // Either no topic detected, topic well-covered, or no available questions
+    // Either no topics detected, all topics well-covered, or no available questions
     // Prioritize questions from completely uncovered categories
     return this.getQuestionFromUncoveredCategory();
   }
