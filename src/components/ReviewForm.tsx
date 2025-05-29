@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CircleRating } from './CircleRating';
 import { PhotoUpload } from './PhotoUpload';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin } from 'lucide-react';
+import { MapPin, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ReviewFormData {
@@ -25,6 +25,22 @@ export const ReviewForm: React.FC = () => {
     review: '',
     photos: []
   });
+  const [showSayMore, setShowSayMore] = useState(false);
+
+  // Check for sentence completion (punctuation marks)
+  useEffect(() => {
+    const text = formData.review.trim();
+    if (text.length > 0) {
+      const lastChar = text[text.length - 1];
+      const hasSentenceEnding = /[.!?]/.test(lastChar);
+      
+      if (hasSentenceEnding && !showSayMore) {
+        setShowSayMore(true);
+      }
+    } else {
+      setShowSayMore(false);
+    }
+  }, [formData.review, showSayMore]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,18 +123,35 @@ export const ReviewForm: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Write your review</h2>
             
             <div className="space-y-6">
-              <div>
+              <div className="relative">
                 <Label htmlFor="review" className="text-base font-medium text-gray-900 mb-2 block">
                   Your review
                 </Label>
-                <Textarea
-                  id="review"
-                  placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
-                  value={formData.review}
-                  onChange={(e) => setFormData(prev => ({ ...prev, review: e.target.value }))}
-                  className="min-h-40 text-base resize-none"
-                  rows={8}
-                />
+                <div className="relative">
+                  <Textarea
+                    id="review"
+                    placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
+                    value={formData.review}
+                    onChange={(e) => setFormData(prev => ({ ...prev, review: e.target.value }))}
+                    className="min-h-40 text-base resize-none"
+                    rows={8}
+                  />
+                  
+                  {/* Say More Banner */}
+                  {showSayMore && (
+                    <div className="absolute bottom-2 left-2 right-2 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 flex items-center justify-between text-sm">
+                      <span className="text-blue-700 font-medium">Say more</span>
+                      <button
+                        type="button"
+                        onClick={() => setShowSayMore(false)}
+                        className="text-blue-500 hover:text-blue-700 p-1"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                
                 <div className="flex justify-end items-center mt-2">
                   <p className="text-sm text-gray-500">
                     {formData.review.length}/200 min characters
