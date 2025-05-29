@@ -41,8 +41,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
                 placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
                 value={review}
                 onChange={(e) => onReviewChange(e.target.value)}
-                className="min-h-40 text-base resize-none"
-                rows={8}
+                className="min-h-40 text-base"
               />
               
               {showSayMore && (
