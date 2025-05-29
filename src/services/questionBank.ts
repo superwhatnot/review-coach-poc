@@ -55,7 +55,7 @@ export const questionBank: QuestionCategory[] = [
   },
   {
     name: 'NOISE',
-    keywords: ['noise', 'loud', 'quiet', 'sound', 'noisy', 'peaceful', 'street noise', 'traffic', 'neighbors', 'music', 'construction', 'sleep', 'disturbing'],
+    keywords: ['noise', 'loud', 'quiet', 'sound', 'noisy', 'peaceful', 'street noise', 'traffic', 'neighbors', 'music', 'construction', 'sleep', 'disturbing', 'disruptive', 'train', 'airplane', 'aircraft', 'car', 'truck', 'siren', 'honking', 'horn', 'party', 'voices', 'talking', 'shouting', 'banging', 'footsteps', 'door', 'slamming', 'elevator', 'air conditioning', 'heating', 'ventilation', 'fan'],
     questions: [
       "What was the noise like in your room — during the day or at night?",
       "Did any specific sounds or sources stand out — like street noise, hallway traffic, or hotel facilities?",
