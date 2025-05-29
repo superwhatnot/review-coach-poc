@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -7,7 +6,7 @@ import { RatingSection } from './RatingSection';
 import { ReviewContentSection } from './ReviewContentSection';
 import { SubmitSection } from './SubmitSection';
 import { Card, CardContent } from '@/components/ui/card';
-import { SmartQuestionSelector } from '../services/smartQuestions';
+import { EnhancedSmartQuestionSelector } from '../services/enhancedSmartQuestions';
 
 interface ReviewFormData {
   overallRating: number;
@@ -28,7 +27,7 @@ export const ReviewForm: React.FC = () => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [lastSentenceCount, setLastSentenceCount] = useState(0);
   const [bannerDismissed, setBannerDismissed] = useState(false);
-  const [questionSelector] = useState(() => new SmartQuestionSelector());
+  const [questionSelector] = useState(() => new EnhancedSmartQuestionSelector());
 
   // Function to check if text ends with a completed sentence (at least 3 words + punctuation)
   const endsWithCompletedSentence = (text: string): boolean => {
@@ -73,7 +72,17 @@ export const ReviewForm: React.FC = () => {
   // Check for sentence completion and get smart questions
   useEffect(() => {
     const text = formData.review.trim();
-    if (text.length > 0 && !bannerDismissed) {
+    
+    // Reset banner dismissal when content changes significantly
+    if (text.length === 0) {
+      setBannerDismissed(false);
+      setLastSentenceCount(0);
+      questionSelector.reset();
+      setShowSayMore(false);
+      return;
+    }
+
+    if (!bannerDismissed) {
       const totalCompletedSentences = countCompletedSentences(text);
       const justCompletedSentence = endsWithCompletedSentence(text);
       
@@ -81,18 +90,16 @@ export const ReviewForm: React.FC = () => {
       if (justCompletedSentence && totalCompletedSentences > lastSentenceCount) {
         setLastSentenceCount(totalCompletedSentences);
         
-        // Get smart question based on the content
+        // Get smart question based on the content using enhanced selector
         const smartQuestion = questionSelector.getSmartQuestion(text);
         setCurrentMessage(smartQuestion);
         setShowSayMore(true);
         
         console.log(`New sentence completed! Count: ${totalCompletedSentences}, Smart question: "${smartQuestion}"`);
-      }
-    } else {
-      setShowSayMore(false);
-      setLastSentenceCount(0);
-      if (text.length === 0) {
-        questionSelector.reset();
+        
+        // Log current analysis for debugging
+        const analysis = questionSelector.getCurrentAnalysis();
+        console.log('Current content analysis:', analysis);
       }
     }
   }, [formData.review, lastSentenceCount, bannerDismissed, questionSelector]);
