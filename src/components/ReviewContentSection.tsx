@@ -3,18 +3,19 @@ import React, { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SayMoreBanner } from './SayMoreBanner';
 import { AttributeDetectionPills } from './AttributeDetectionPills';
+import { WritingCoachToggle } from './WritingCoachToggle';
+import { WritingAssistant } from './WritingAssistant';
 
 interface ReviewContentSectionProps {
   review: string;
   title: string;
   onReviewChange: (review: string) => void;
   onTitleChange: (title: string) => void;
-  showSayMore: boolean;
-  sayMoreMessage: string;
-  onDismissSayMore: () => void;
   attributeDetectionText: string;
+  writingCoachEnabled: boolean;
+  onWritingCoachToggle: (enabled: boolean) => void;
+  getSmartQuestion: (text: string) => string;
 }
 
 export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
@@ -22,19 +23,30 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   title,
   onReviewChange,
   onTitleChange,
-  showSayMore,
-  sayMoreMessage,
-  onDismissSayMore,
-  attributeDetectionText
+  attributeDetectionText,
+  writingCoachEnabled,
+  onWritingCoachToggle,
+  getSmartQuestion
 }) => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
+
+  const handleSuggestionUse = (suggestion: string) => {
+    // Add a space and the suggestion to the current review
+    const newReview = review.trim() + (review.trim() ? ' ' : '') + suggestion;
+    onReviewChange(newReview);
+  };
 
   return (
     <div className="mb-6">
       <h2 className="text-xl font-semibold mb-4">Write your review</h2>
       
+      <WritingCoachToggle
+        enabled={writingCoachEnabled}
+        onToggle={onWritingCoachToggle}
+      />
+      
       <div className="space-y-4">
-        <div>
+        <div className="relative">
           <AttributeDetectionPills 
             reviewText={attributeDetectionText} 
             isVisible={isTextareaFocused}
@@ -50,12 +62,12 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             className="min-h-40 text-base mt-3"
           />
           
-          {showSayMore && (
-            <SayMoreBanner
-              message={sayMoreMessage}
-              onDismiss={onDismissSayMore}
-            />
-          )}
+          <WritingAssistant
+            reviewText={review}
+            isEnabled={writingCoachEnabled}
+            onSuggestionUse={handleSuggestionUse}
+            getSmartQuestion={getSmartQuestion}
+          />
           
           <div className="flex justify-end items-center mt-2">
             <p className="text-sm text-gray-500">

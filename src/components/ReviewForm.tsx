@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -22,104 +23,49 @@ export const ReviewForm: React.FC = () => {
     review: '',
     photos: []
   });
-  const [showSayMore, setShowSayMore] = useState(false);
-  const [currentMessage, setCurrentMessage] = useState('');
-  const [lastSentenceCount, setLastSentenceCount] = useState(0);
-  const [bannerDismissed, setBannerDismissed] = useState(false);
   const [questionSelector] = useState(() => new EnhancedSmartQuestionSelector());
-  const [lastReviewLength, setLastReviewLength] = useState(0);
   const [attributeDetectionText, setAttributeDetectionText] = useState('');
+  const [writingCoachEnabled, setWritingCoachEnabled] = useState(true);
 
-  // Function to check if text ends with a completed sentence (at least 2 words + punctuation)
+  // Function to check if text ends with a completed sentence
   const endsWithCompletedSentence = (text: string): boolean => {
     const trimmed = text.trim();
     if (trimmed.length === 0) return false;
     
-    // Check if it ends with punctuation
     if (!/[.!?]$/.test(trimmed)) return false;
     
-    // Find the last sentence by splitting from the end
     const lastPunctuationIndex = Math.max(
       trimmed.lastIndexOf('.', trimmed.length - 2),
       trimmed.lastIndexOf('!', trimmed.length - 2),
       trimmed.lastIndexOf('?', trimmed.length - 2)
     );
     
-    // Get the last sentence (everything after the last punctuation, or the whole text if no previous punctuation)
     const lastSentence = lastPunctuationIndex >= 0 
       ? trimmed.substring(lastPunctuationIndex + 1, trimmed.length - 1).trim()
       : trimmed.substring(0, trimmed.length - 1).trim();
     
-    // Check if the last sentence has at least 2 words
     const words = lastSentence.split(/\s+/).filter(word => word.length > 0);
     return words.length >= 2;
   };
 
-  // Function to count total completed sentences
-  const countCompletedSentences = (text: string): number => {
-    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    let count = 0;
-    
-    for (const sentence of sentences) {
-      const words = sentence.trim().split(/\s+/).filter(word => word.length > 0);
-      if (words.length >= 2) {
-        count++;
-      }
-    }
-    
-    return count;
-  };
-
-  // Check for sentence completion and get smart questions
+  // Update attribute detection when sentences are completed or content is deleted
   useEffect(() => {
     const text = formData.review.trim();
-    const currentLength = text.length;
-    const wasDeleted = currentLength < lastReviewLength;
     
-    // Update attribute detection when sentence is completed OR when text is deleted
     if (text.length === 0) {
-      setBannerDismissed(false);
-      setLastSentenceCount(0);
       questionSelector.reset();
-      setShowSayMore(false);
       setAttributeDetectionText('');
-      setLastReviewLength(0);
       return;
     }
 
-    const justCompletedSentence = endsWithCompletedSentence(text);
-    
-    // Update attribute detection if sentence completed or text was deleted
-    if (justCompletedSentence || wasDeleted) {
+    // Update attribute detection if sentence completed or text was significantly modified
+    if (endsWithCompletedSentence(text) || Math.abs(text.length - attributeDetectionText.length) > 10) {
       setAttributeDetectionText(text);
     }
+  }, [formData.review, questionSelector, attributeDetectionText.length]);
 
-    if (!bannerDismissed) {
-      const totalCompletedSentences = countCompletedSentences(text);
-      
-      // Show banner only if we just completed a sentence and it's a new one
-      if (justCompletedSentence && totalCompletedSentences > lastSentenceCount) {
-        setLastSentenceCount(totalCompletedSentences);
-        
-        // Get smart question based on the content using enhanced selector
-        const smartQuestion = questionSelector.getSmartQuestion(text);
-        setCurrentMessage(smartQuestion);
-        setShowSayMore(true);
-        
-        console.log(`New sentence completed! Count: ${totalCompletedSentences}, Smart question: "${smartQuestion}"`);
-        
-        // Log current analysis for debugging
-        const analysis = questionSelector.getCurrentAnalysis();
-        console.log('Current content analysis:', analysis);
-      }
-    }
-    
-    setLastReviewLength(currentLength);
-  }, [formData.review, lastSentenceCount, bannerDismissed, questionSelector, lastReviewLength]);
-
-  const handleDismissSayMore = () => {
-    setShowSayMore(false);
-    setBannerDismissed(true);
+  const getSmartQuestion = (text: string): string => {
+    return questionSelector.getSmartQuestion(text);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -165,10 +111,10 @@ export const ReviewForm: React.FC = () => {
           title={formData.title}
           onReviewChange={(review) => setFormData(prev => ({ ...prev, review }))}
           onTitleChange={(title) => setFormData(prev => ({ ...prev, title }))}
-          showSayMore={showSayMore}
-          sayMoreMessage={currentMessage}
-          onDismissSayMore={handleDismissSayMore}
           attributeDetectionText={attributeDetectionText}
+          writingCoachEnabled={writingCoachEnabled}
+          onWritingCoachToggle={setWritingCoachEnabled}
+          getSmartQuestion={getSmartQuestion}
         />
 
         <div className="mb-6">
