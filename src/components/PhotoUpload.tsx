@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
-import { Camera, X, Upload, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Camera, X, Plus } from 'lucide-react';
 
 interface PhotoUploadProps {
   onPhotosChange: (photos: File[]) => void;
@@ -70,25 +69,20 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({ onPhotosChange }) => {
       )}
       
       {photos.length === 0 && (
-        <div className="bg-gray-50 rounded-lg p-12 text-center">
+        <label className="block bg-gray-50 rounded-lg p-12 text-center cursor-pointer hover:bg-gray-100 transition-colors">
           <div className="w-16 h-16 mx-auto mb-6 bg-white rounded-lg flex items-center justify-center border border-gray-200">
             <Camera size={24} className="text-gray-400" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">Click to add photos</h3>
-          <p className="text-gray-500 mb-6">or drag and drop</p>
-          <label>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-            <div className="cursor-pointer">
-              <span className="text-gray-900">Click to add photos</span>
-            </div>
-          </label>
-        </div>
+          <p className="text-gray-500">or drag and drop</p>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </label>
       )}
     </div>
   );
