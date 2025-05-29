@@ -25,6 +25,7 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const generationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cachedSuggestionRef = useRef<string>('');
 
   // Function to check if text ends with a completed sentence
   const endsWithCompletedSentence = (text: string): boolean => {
@@ -47,7 +48,7 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     return words.length >= 2;
   };
 
-  // Pre-generate suggestion asynchronously
+  // Pre-generate suggestion asynchronously without causing re-renders
   const preGenerateSuggestion = (text: string) => {
     if (generationTimeoutRef.current) {
       clearTimeout(generationTimeoutRef.current);
@@ -56,9 +57,10 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     generationTimeoutRef.current = setTimeout(() => {
       const suggestion = getSmartQuestion(text);
       if (suggestion && suggestion.trim()) {
-        setCurrentSuggestion(suggestion);
+        // Cache the suggestion without updating state immediately
+        cachedSuggestionRef.current = suggestion;
       }
-    }, 0); // Use setTimeout to make it async
+    }, 0);
   };
 
   // Effect to handle showing the prompt after sentence completion
@@ -78,7 +80,7 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     if (text.length === 0) {
       setShowPrompt(false);
       setLastProcessedText('');
-      setCurrentSuggestion('');
+      cachedSuggestionRef.current = '';
       return;
     }
 
@@ -91,7 +93,8 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     if (endsWithCompletedSentence(text) && text !== lastProcessedText) {
       // Start 2-second timer to show prompt
       timeoutRef.current = setTimeout(() => {
-        if (currentSuggestion && currentSuggestion.trim()) {
+        if (cachedSuggestionRef.current) {
+          setCurrentSuggestion(cachedSuggestionRef.current);
           setShowPrompt(true);
           setLastProcessedText(text);
         }
@@ -106,7 +109,7 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
         clearTimeout(generationTimeoutRef.current);
       }
     };
-  }, [reviewText, isEnabled, currentSuggestion, lastProcessedText, isMinimized]);
+  }, [reviewText, isEnabled, lastProcessedText, isMinimized]);
 
   // When restored from minimized state, show the prompt
   useEffect(() => {
@@ -116,12 +119,17 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   }, [isMinimized, currentSuggestion]);
 
   const handleHelpMeWriteClick = () => {
-    // If no suggestion is cached yet, generate one immediately as fallback
-    if (!currentSuggestion && reviewText.trim()) {
-      const suggestion = getSmartQuestion(reviewText);
-      setCurrentSuggestion(suggestion);
+    // Use cached suggestion first, or generate immediately as fallback
+    let suggestion = cachedSuggestionRef.current;
+    if (!suggestion && reviewText.trim()) {
+      suggestion = getSmartQuestion(reviewText);
+      cachedSuggestionRef.current = suggestion;
     }
-    setShowPrompt(true);
+    
+    if (suggestion) {
+      setCurrentSuggestion(suggestion);
+      setShowPrompt(true);
+    }
     onRestore();
   };
 
