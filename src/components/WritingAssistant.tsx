@@ -116,11 +116,11 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     return null;
   }
 
-  // Show dynamic prompt as simple light grey text
+  // Show dynamic prompt as simple light grey text with fade-in animation
   if (showPrompt && currentSuggestion) {
     return (
       <div 
-        className="py-2"
+        className="py-2 animate-fade-in"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
