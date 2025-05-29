@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -28,7 +27,17 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   getSmartQuestion
 }) => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
+  const [hasBeenFocused, setHasBeenFocused] = useState(false);
   const [isWritingAssistantMinimized, setIsWritingAssistantMinimized] = useState(false);
+
+  const handleFocus = () => {
+    setIsTextareaFocused(true);
+    setHasBeenFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsTextareaFocused(false);
+  };
 
   const handleHelpMeWriteClick = () => {
     setIsWritingAssistantMinimized(false);
@@ -48,7 +57,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
         <div className="relative">
           <AttributeDetectionPills 
             reviewText={attributeDetectionText} 
-            isVisible={isTextareaFocused}
+            isVisible={hasBeenFocused}
           />
           
           <div className="relative">
@@ -57,8 +66,8 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
               placeholder="The pillows are the fluffiest I've ever felt..."
               value={review}
               onChange={(e) => onReviewChange(e.target.value)}
-              onFocus={() => setIsTextareaFocused(true)}
-              onBlur={() => setIsTextareaFocused(false)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               className="min-h-40 text-base mt-3 pr-20"
             />
             
