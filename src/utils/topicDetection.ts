@@ -1,39 +1,156 @@
 
 import { questionBank } from '../services/questionBank';
 
+// Contextual patterns for better topic detection
+interface ContextualPattern {
+  category: string;
+  patterns: {
+    words: string[];
+    sentiment?: 'positive' | 'negative' | 'neutral';
+    context?: string[];
+    weight: number;
+  }[];
+}
+
+const contextualPatterns: ContextualPattern[] = [
+  {
+    category: 'LOCATION',
+    patterns: [
+      { words: ['train', 'bus', 'subway', 'metro'], context: ['easy', 'convenient', 'accessible', 'close', 'able', 'quick', 'fast'], sentiment: 'positive', weight: 4 },
+      { words: ['walking', 'walk'], context: ['easy', 'convenient', 'close', 'short', 'quick'], sentiment: 'positive', weight: 3 },
+      { words: ['driving', 'drive'], context: ['easy', 'convenient', 'accessible', 'parking'], sentiment: 'positive', weight: 3 },
+      { words: ['location', 'area', 'neighborhood'], context: ['good', 'great', 'perfect', 'convenient'], sentiment: 'positive', weight: 3 },
+      { words: ['airport', 'station'], context: ['close', 'near', 'convenient', 'easy'], sentiment: 'positive', weight: 3 },
+      { words: ['getting', 'reach', 'access'], context: ['to', 'from', 'around', 'easy', 'difficult'], weight: 2 },
+      { words: ['nearby', 'around', 'close', 'distance'], weight: 2 }
+    ]
+  },
+  {
+    category: 'NOISE',
+    patterns: [
+      { words: ['train', 'traffic', 'cars'], context: ['loud', 'noisy', 'disruptive', 'disturbing', 'annoying'], sentiment: 'negative', weight: 4 },
+      { words: ['noise', 'loud', 'noisy'], weight: 4 },
+      { words: ['quiet', 'peaceful', 'silent'], sentiment: 'positive', weight: 3 },
+      { words: ['sleep', 'sleeping'], context: ['difficult', 'hard', 'disturbed', 'interrupted'], sentiment: 'negative', weight: 3 },
+      { words: ['night', 'evening'], context: ['loud', 'noisy', 'disruptive'], sentiment: 'negative', weight: 3 },
+      { words: ['construction', 'music', 'party'], context: ['loud', 'disturbing'], sentiment: 'negative', weight: 3 }
+    ]
+  },
+  {
+    category: 'CLEANLINESS',
+    patterns: [
+      { words: ['clean', 'spotless', 'tidy'], sentiment: 'positive', weight: 4 },
+      { words: ['dirty', 'messy', 'filthy'], sentiment: 'negative', weight: 4 },
+      { words: ['bathroom', 'room', 'bed'], context: ['clean', 'dirty', 'spotless', 'messy'], weight: 3 },
+      { words: ['smell', 'odor'], context: ['bad', 'terrible', 'unpleasant'], sentiment: 'negative', weight: 3 },
+      { words: ['housekeeping', 'cleaning'], weight: 2 }
+    ]
+  },
+  {
+    category: 'ROOMS',
+    patterns: [
+      { words: ['room', 'bedroom', 'suite'], context: ['spacious', 'comfortable', 'cozy', 'cramped', 'small'], weight: 4 },
+      { words: ['bed', 'mattress'], context: ['comfortable', 'soft', 'hard', 'uncomfortable'], weight: 3 },
+      { words: ['bathroom', 'shower'], context: ['nice', 'good', 'small', 'cramped'], weight: 3 },
+      { words: ['furniture', 'decor', 'design'], weight: 2 },
+      { words: ['view', 'window', 'balcony'], weight: 2 }
+    ]
+  },
+  {
+    category: 'ATMOSPHERE',
+    patterns: [
+      { words: ['atmosphere', 'vibe', 'feel'], weight: 4 },
+      { words: ['cozy', 'elegant', 'modern', 'classic'], weight: 3 },
+      { words: ['lobby', 'reception'], context: ['beautiful', 'nice', 'impressive'], weight: 3 },
+      { words: ['impression', 'feeling'], weight: 2 }
+    ]
+  },
+  {
+    category: 'SERVICE',
+    patterns: [
+      { words: ['staff', 'service', 'employee'], weight: 4 },
+      { words: ['helpful', 'friendly', 'rude', 'professional'], context: ['staff', 'service'], weight: 3 },
+      { words: ['check-in', 'check-out'], weight: 3 },
+      { words: ['reception', 'front desk', 'concierge'], weight: 2 }
+    ]
+  },
+  {
+    category: 'AMENITIES',
+    patterns: [
+      { words: ['pool', 'gym', 'spa', 'restaurant', 'bar'], weight: 4 },
+      { words: ['parking', 'wifi', 'internet'], weight: 3 },
+      { words: ['breakfast'], weight: 3 },
+      { words: ['amenities', 'facilities'], weight: 2 }
+    ]
+  },
+  {
+    category: 'VALUE',
+    patterns: [
+      { words: ['price', 'cost', 'expensive', 'cheap'], weight: 4 },
+      { words: ['value', 'worth', 'money'], weight: 3 },
+      { words: ['budget', 'affordable', 'overpriced'], weight: 3 },
+      { words: ['deal', 'fee', 'charge'], weight: 2 }
+    ]
+  }
+];
+
 export const detectTopicFromText = (text: string): string | null => {
   const normalizedText = text.toLowerCase().trim();
   
   if (!normalizedText) return null;
   
-  console.log(`Analyzing text for topic detection: "${normalizedText}"`);
+  console.log(`Analyzing text for contextual topic detection: "${normalizedText}"`);
   
-  // Score each category based on keyword matches
   const categoryScores: { [key: string]: number } = {};
   
-  for (const category of questionBank) {
+  // Split text into words for analysis
+  const words = normalizedText.split(/\s+/);
+  
+  for (const pattern of contextualPatterns) {
     let score = 0;
     
-    for (const keyword of category.keywords) {
-      const keywordLower = keyword.toLowerCase();
+    for (const patternRule of pattern.patterns) {
+      // Check if any pattern words are present
+      const hasPatternWord = patternRule.words.some(word => 
+        normalizedText.includes(word.toLowerCase())
+      );
       
-      // Exact word match gets higher score
-      const exactWordRegex = new RegExp(`\\b${keywordLower}\\b`, 'gi');
-      const exactMatches = (normalizedText.match(exactWordRegex) || []).length;
-      score += exactMatches * 3;
-      
-      // Partial match gets lower score
-      if (normalizedText.includes(keywordLower)) {
-        score += 1;
-      }
-      
-      if (exactMatches > 0 || normalizedText.includes(keywordLower)) {
-        console.log(`Keyword "${keyword}" matched in category ${category.name}, score: ${score}`);
+      if (hasPatternWord) {
+        let ruleScore = patternRule.weight;
+        
+        // Boost score if context words are present
+        if (patternRule.context) {
+          const hasContext = patternRule.context.some(contextWord => 
+            normalizedText.includes(contextWord.toLowerCase())
+          );
+          if (hasContext) {
+            ruleScore += 2;
+            console.log(`Context boost for ${pattern.category}: found pattern word with context`);
+          }
+        }
+        
+        // Apply sentiment multiplier
+        if (patternRule.sentiment) {
+          const positiveWords = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'nice', 'easy', 'convenient'];
+          const negativeWords = ['bad', 'terrible', 'awful', 'horrible', 'difficult', 'hard', 'annoying', 'disturbing'];
+          
+          const hasPositive = positiveWords.some(word => normalizedText.includes(word));
+          const hasNegative = negativeWords.some(word => normalizedText.includes(word));
+          
+          if (patternRule.sentiment === 'positive' && hasPositive) {
+            ruleScore += 1;
+          } else if (patternRule.sentiment === 'negative' && hasNegative) {
+            ruleScore += 1;
+          }
+        }
+        
+        score += ruleScore;
+        console.log(`Pattern match for ${pattern.category}: +${ruleScore} (total: ${score})`);
       }
     }
     
     if (score > 0) {
-      categoryScores[category.name] = score;
+      categoryScores[pattern.category] = score;
     }
   }
   

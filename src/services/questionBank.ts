@@ -1,14 +1,14 @@
 
 export interface QuestionCategory {
   name: string;
-  keywords: string[];
+  keywords: string[]; // Keep for backward compatibility but not used in new detection
   questions: string[];
 }
 
 export const questionBank: QuestionCategory[] = [
   {
     name: 'LOCATION',
-    keywords: ['location', 'area', 'neighborhood', 'nearby', 'around', 'walking', 'driving', 'transit', 'transportation', 'distance', 'close', 'far', 'convenient', 'getting to', 'getting around', 'airport', 'access', 'accessible', 'proximity', 'commute', 'travel', 'reach', 'reachable', 'train', 'bus', 'subway', 'metro', 'taxi', 'uber', 'lyft'],
+    keywords: [], // Not used in contextual detection
     questions: [
       "What made the location a good fit (or not) for your trip?",
       "How was it getting to the hotel from wherever you came from?",
@@ -20,7 +20,7 @@ export const questionBank: QuestionCategory[] = [
   },
   {
     name: 'ATMOSPHERE',
-    keywords: ['atmosphere', 'vibe', 'feel', 'impression', 'ambiance', 'mood', 'style', 'decor', 'design', 'lobby', 'cozy', 'spacious', 'compact', 'open', 'elegant', 'modern', 'classic'],
+    keywords: [],
     questions: [
       "How would you describe the vibe of the hotel during your stay?",
       "What was your first impression when you stepped inside?",
@@ -32,7 +32,7 @@ export const questionBank: QuestionCategory[] = [
   },
   {
     name: 'CLEANLINESS',
-    keywords: ['clean', 'dirty', 'cleanliness', 'hygiene', 'sanitary', 'spotless', 'messy', 'tidy', 'maintained', 'housekeeping', 'fresh', 'smell'],
+    keywords: [],
     questions: [
       "How clean did your room feel during your stay?",
       "What was your experience with the bathroom's cleanliness?",
@@ -43,7 +43,7 @@ export const questionBank: QuestionCategory[] = [
   },
   {
     name: 'ROOMS',
-    keywords: ['room', 'bedroom', 'suite', 'bed', 'bathroom', 'shower', 'furniture', 'comfort', 'space', 'size', 'layout', 'amenities', 'view', 'window', 'balcony'],
+    keywords: [],
     questions: [
       "How did your room feel overall during your stay?",
       "What stood out to you about the furniture, bed, or overall comfort of the room?",
@@ -55,7 +55,7 @@ export const questionBank: QuestionCategory[] = [
   },
   {
     name: 'NOISE',
-    keywords: ['noise', 'loud', 'quiet', 'sound', 'noisy', 'peaceful', 'street noise', 'traffic', 'neighbors', 'music', 'construction', 'sleep', 'disturbing', 'disruptive', 'train', 'airplane', 'aircraft', 'car', 'truck', 'siren', 'honking', 'horn', 'party', 'voices', 'talking', 'shouting', 'banging', 'footsteps', 'door', 'slamming', 'elevator', 'air conditioning', 'heating', 'ventilation', 'fan'],
+    keywords: [],
     questions: [
       "What was the noise like in your room — during the day or at night?",
       "Did any specific sounds or sources stand out — like street noise, hallway traffic, or hotel facilities?",
@@ -65,7 +65,7 @@ export const questionBank: QuestionCategory[] = [
   },
   {
     name: 'SERVICE',
-    keywords: ['staff', 'service', 'employee', 'helpful', 'friendly', 'rude', 'professional', 'check-in', 'check-out', 'reception', 'front desk', 'concierge', 'housekeeping'],
+    keywords: [],
     questions: [
       "How would you describe the way staff treated you during your stay?",
       "Were there any moments where staff went out of their way to help you — or didn't?",
@@ -75,7 +75,7 @@ export const questionBank: QuestionCategory[] = [
   },
   {
     name: 'AMENITIES',
-    keywords: ['pool', 'gym', 'spa', 'restaurant', 'bar', 'parking', 'wifi', 'internet', 'breakfast', 'facilities', 'amenities', 'fitness', 'dining', 'elevator'],
+    keywords: [],
     questions: [
       "Did you use any of the hotel's amenities — like a pool, gym, restaurant, or parking? What was that like?",
       "Was there anything the hotel offered that really added to your stay?",
@@ -86,7 +86,7 @@ export const questionBank: QuestionCategory[] = [
   },
   {
     name: 'VALUE',
-    keywords: ['price', 'cost', 'expensive', 'cheap', 'value', 'worth', 'money', 'budget', 'affordable', 'overpriced', 'deal', 'fee', 'charge'],
+    keywords: [],
     questions: [
       "Did the stay feel worth what you paid?",
       "Were there any extras — included or unexpected — that added to the value?",
