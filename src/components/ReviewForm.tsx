@@ -39,20 +39,36 @@ export const ReviewForm: React.FC = () => {
   const [lastSentenceCount, setLastSentenceCount] = useState(0);
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
+  // Function to detect real sentences (at least 3 words ending with punctuation)
+  const countRealSentences = (text: string): number => {
+    // Split text by sentence-ending punctuation
+    const potentialSentences = text.split(/[.!?]+/);
+    let realSentenceCount = 0;
+    
+    for (const sentence of potentialSentences) {
+      const words = sentence.trim().split(/\s+/).filter(word => word.length > 0);
+      // Count as a real sentence if it has at least 3 words
+      if (words.length >= 3) {
+        realSentenceCount++;
+      }
+    }
+    
+    return realSentenceCount;
+  };
+
   // Check for sentence completion and cycle messages
   useEffect(() => {
     const text = formData.review.trim();
     if (text.length > 0 && !bannerDismissed) {
-      // Count completed sentences (ending with punctuation)
-      const completedSentences = (text.match(/[.!?]/g) || []).length;
+      const completedSentences = countRealSentences(text);
       
-      // Check if we just completed a new sentence
+      // Check if we just completed a new real sentence
       if (completedSentences > lastSentenceCount) {
         setLastSentenceCount(completedSentences);
         setMessageIndex(completedSentences - 1); // Use 0-based index
         setShowSayMore(true);
         
-        console.log(`New sentence completed! Count: ${completedSentences}, Message: "${encouragingMessages[completedSentences - 1]}"`);
+        console.log(`New real sentence completed! Count: ${completedSentences}, Message: "${encouragingMessages[completedSentences - 1]}"`);
       }
     } else {
       setShowSayMore(false);
