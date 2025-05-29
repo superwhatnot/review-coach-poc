@@ -28,7 +28,7 @@ export const SubmitSection: React.FC<SubmitSectionProps> = ({ onSubmit }) => {
           onCheckedChange={(checked) => setIsChecked(checked === true)}
           className="mt-1"
         />
-        <label htmlFor="legal-disclaimer" className="text-sm text-gray-700 leading-relaxed cursor-pointer">
+        <label htmlFor="legal-disclaimer" className="text-xs text-gray-700 leading-tight cursor-pointer">
           I certify that this review is based on my own experience and is my genuine opinion of this hotel, and that I have no personal or business relationship with this establishment, and have not been offered any incentive or payment originating from the establishment to write this review. I understand that Tripadvisor has a zero-tolerance policy on fake reviews.{' '}
           <a 
             href="https://www.tripadvisor.com/help/what_is_considered_fraud#Fraud%20Definition" 
