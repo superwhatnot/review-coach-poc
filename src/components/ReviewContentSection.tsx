@@ -31,26 +31,24 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
         <h2 className="text-xl font-semibold mb-4">Write your review</h2>
         
         <div className="space-y-6">
-          <div className="relative">
+          <div>
             <Label htmlFor="review" className="text-base font-medium text-gray-900 mb-2 block">
               Your review
             </Label>
-            <div className="relative">
-              <Textarea
-                id="review"
-                placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
-                value={review}
-                onChange={(e) => onReviewChange(e.target.value)}
-                className="min-h-40 text-base"
+            <Textarea
+              id="review"
+              placeholder="Tell people about your experience: describe the location, room, service, food, entertainment, and more"
+              value={review}
+              onChange={(e) => onReviewChange(e.target.value)}
+              className="min-h-40 text-base"
+            />
+            
+            {showSayMore && (
+              <SayMoreBanner
+                message={sayMoreMessage}
+                onDismiss={onDismissSayMore}
               />
-              
-              {showSayMore && (
-                <SayMoreBanner
-                  message={sayMoreMessage}
-                  onDismiss={onDismissSayMore}
-                />
-              )}
-            </div>
+            )}
             
             <div className="flex justify-end items-center mt-2">
               <p className="text-sm text-gray-500">

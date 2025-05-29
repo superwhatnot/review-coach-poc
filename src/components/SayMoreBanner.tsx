@@ -9,12 +9,12 @@ interface SayMoreBannerProps {
 
 export const SayMoreBanner: React.FC<SayMoreBannerProps> = ({ message, onDismiss }) => {
   return (
-    <div className="absolute bottom-2 left-2 right-2 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 flex items-start justify-between text-sm gap-2">
+    <div className="mt-2 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 flex items-start justify-between text-sm gap-2">
       <span className="text-blue-700 font-medium flex-1 leading-relaxed">{message}</span>
       <button
         type="button"
         onClick={onDismiss}
-        className="text-blue-500 hover:text-blue-700 p-1 flex-shrink-0 mt-0.5"
+        className="text-blue-500 hover:text-blue-700 p-1 flex-shrink-0"
       >
         <X size={14} />
       </button>
