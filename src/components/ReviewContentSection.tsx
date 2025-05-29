@@ -59,8 +59,15 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
               onChange={(e) => onReviewChange(e.target.value)}
               onFocus={() => setIsTextareaFocused(true)}
               onBlur={() => setIsTextareaFocused(false)}
-              className="min-h-40 text-base mt-3"
+              className="min-h-40 text-base mt-3 pr-20"
             />
+            
+            {/* Character count inside textarea - bottom right */}
+            {isTextareaFocused && (
+              <div className="absolute bottom-2 right-3 text-xs text-gray-400 pointer-events-none">
+                {review.length}
+              </div>
+            )}
           </div>
           
           {/* Writing Assistant - positioned directly below textarea */}
