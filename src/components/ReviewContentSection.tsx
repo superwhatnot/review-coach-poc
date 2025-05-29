@@ -28,10 +28,14 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   getSmartQuestion
 }) => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isWritingAssistantMinimized, setIsWritingAssistantMinimized] = useState(false);
 
   const handleHelpMeWriteClick = () => {
-    setIsMinimized(false);
+    setIsWritingAssistantMinimized(false);
+  };
+
+  const handleWritingAssistantMinimize = () => {
+    setIsWritingAssistantMinimized(true);
   };
 
   return (
@@ -69,11 +73,14 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             reviewText={review}
             isEnabled={writingCoachEnabled}
             getSmartQuestion={getSmartQuestion}
+            isMinimized={isWritingAssistantMinimized}
+            onMinimize={handleWritingAssistantMinimize}
+            onRestore={handleHelpMeWriteClick}
           />
           
           <div className="flex justify-between items-center mt-2">
             <MinimizedWritingAssistant
-              isMinimized={isMinimized}
+              isMinimized={isWritingAssistantMinimized}
               onHelpMeWriteClick={handleHelpMeWriteClick}
             />
             <div></div>

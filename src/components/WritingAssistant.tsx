@@ -6,16 +6,21 @@ interface WritingAssistantProps {
   reviewText: string;
   isEnabled: boolean;
   getSmartQuestion: (text: string) => string;
+  isMinimized: boolean;
+  onMinimize: () => void;
+  onRestore: () => void;
 }
 
 export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   reviewText,
   isEnabled,
-  getSmartQuestion
+  getSmartQuestion,
+  isMinimized,
+  onMinimize,
+  onRestore
 }) => {
   const [showBanner, setShowBanner] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [currentSuggestion, setCurrentSuggestion] = useState('');
   const [lastProcessedText, setLastProcessedText] = useState('');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -82,6 +87,13 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     };
   }, [reviewText, isEnabled, getSmartQuestion, lastProcessedText, isMinimized]);
 
+  // When restored from minimized state, show the banner
+  useEffect(() => {
+    if (!isMinimized && currentSuggestion) {
+      setShowBanner(true);
+    }
+  }, [isMinimized, currentSuggestion]);
+
   const handleHelpMeWriteClick = () => {
     if (!isExpanded) {
       // If not expanded, expand and get a fresh suggestion if needed
@@ -90,19 +102,20 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
         setCurrentSuggestion(suggestion);
       }
       setIsExpanded(true);
+      onRestore();
     }
   };
 
   const handleCollapse = () => {
     setIsExpanded(false);
     setShowBanner(false);
-    setIsMinimized(true);
+    onMinimize();
   };
 
   if (!isEnabled) return null;
 
-  // Minimized state - returns null to be rendered in the character count line
-  if (isMinimized && !showBanner) {
+  // If minimized, don't render anything here (it will be rendered in the character count area)
+  if (isMinimized) {
     return null;
   }
 
