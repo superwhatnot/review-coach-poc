@@ -38,15 +38,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
     setIsWritingAssistantMinimized(true);
   };
 
-  const handleReviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    // Only allow up to 200 characters (the minimum length mentioned in the placeholder)
-    if (newValue.length <= 200) {
-      onReviewChange(newValue);
-    }
-  };
-
-  const isAtCharacterLimit = review.length >= 200;
+  const isAtTitleCharacterLimit = title.length >= 120;
 
   return (
     <div className="mb-6">
@@ -64,18 +56,11 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
               id="review"
               placeholder="The pillows are the fluffiest I've ever felt..."
               value={review}
-              onChange={handleReviewChange}
+              onChange={(e) => onReviewChange(e.target.value)}
               onFocus={() => setIsTextareaFocused(true)}
               onBlur={() => setIsTextareaFocused(false)}
-              className="min-h-40 text-base mt-3 pr-20"
+              className="min-h-40 text-base mt-3"
             />
-            
-            {/* Character count inside textarea - bottom right - only show when at limit */}
-            {isTextareaFocused && isAtCharacterLimit && (
-              <div className="absolute bottom-2 right-3 text-xs text-gray-400 pointer-events-none">
-                200/200 min
-              </div>
-            )}
           </div>
           
           {/* Writing Assistant - positioned directly below textarea */}
@@ -110,9 +95,11 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
             maxLength={120}
           />
           <div className="flex justify-end items-center mt-2">
-            <p className="text-sm text-gray-500">
-              {title.length}/120 max characters
-            </p>
+            {isAtTitleCharacterLimit && (
+              <p className="text-sm text-gray-500">
+                120/120 max characters
+              </p>
+            )}
           </div>
         </div>
       </div>
