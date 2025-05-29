@@ -1,40 +1,49 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface SubmitSectionProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
 export const SubmitSection: React.FC<SubmitSectionProps> = ({ onSubmit }) => {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isChecked) {
+      alert('Please certify that your review is genuine by checking the checkbox.');
+      return;
+    }
+    onSubmit(e);
+  };
+
   return (
-    <div className="mt-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="text-sm text-gray-600 max-w-md">
-          <p className="mb-2">
-            <strong>A few reminders:</strong>
-          </p>
-          <ul className="list-disc list-inside space-y-1 text-xs">
-            <li>Your review should be about your own experience</li>
-            <li>Please check your spelling and grammar</li>
-            <li>Reviews must be at least 200 characters</li>
-            <li>Don't include personal details like email addresses</li>
-          </ul>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" type="button" size="lg">
-            Save Draft
-          </Button>
-          <Button 
-            type="submit" 
-            size="lg"
-            className="bg-black hover:bg-gray-800 text-white px-8"
-            onClick={onSubmit}
-          >
-            Submit review
-          </Button>
-        </div>
+    <div className="mt-8 space-y-6">
+      <div className="flex items-start space-x-3">
+        <Checkbox 
+          id="legal-disclaimer"
+          checked={isChecked}
+          onCheckedChange={setIsChecked}
+          className="mt-1"
+        />
+        <label htmlFor="legal-disclaimer" className="text-sm text-gray-700 leading-relaxed cursor-pointer">
+          I certify that this review is based on my own experience and is my genuine opinion of this hotel, and that I have no personal or business relationship with this establishment, and have not been offered any incentive or payment originating from the establishment to write this review. I understand that Tripadvisor has a zero-tolerance policy on fake reviews.{' '}
+          <a href="#" className="text-blue-600 underline hover:text-blue-800">
+            Learn more about the consequences of review fraud.
+          </a>
+        </label>
       </div>
+      
+      <Button 
+        type="submit" 
+        onClick={handleSubmit}
+        className="w-full bg-black hover:bg-gray-800 text-white py-4 text-lg font-medium rounded-full"
+        size="lg"
+      >
+        Submit review
+      </Button>
     </div>
   );
 };
