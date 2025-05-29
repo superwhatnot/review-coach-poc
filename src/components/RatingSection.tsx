@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { CircleRating } from './CircleRating';
 
 interface RatingSectionProps {
@@ -26,24 +25,22 @@ export const RatingSection: React.FC<RatingSectionProps> = ({ rating, onRatingCh
   const shouldShowLabel = hoverRating > 0 || rating > 0;
 
   return (
-    <Card>
-      <CardContent className="p-6">
-        <h2 className="text-xl font-semibold mb-4">How would you rate your experience?</h2>
-        
-        <div className="flex items-center gap-4">
-          <CircleRating
-            rating={rating}
-            onRatingChange={onRatingChange}
-            onHoverChange={setHoverRating}
-            size={40}
-          />
-          {shouldShowLabel && (
-            <span className="text-lg text-gray-700">
-              {getRatingLabel(displayRating)}
-            </span>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="bg-white rounded-lg border p-4">
+      <h2 className="text-xl font-semibold mb-4">How would you rate your experience?</h2>
+      
+      <div className="flex items-center gap-4">
+        <CircleRating
+          rating={rating}
+          onRatingChange={onRatingChange}
+          onHoverChange={setHoverRating}
+          size={40}
+        />
+        {shouldShowLabel && (
+          <span className="text-lg text-gray-700">
+            {getRatingLabel(displayRating)}
+          </span>
+        )}
+      </div>
+    </div>
   );
 };

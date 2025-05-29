@@ -152,10 +152,10 @@ export const ReviewForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="space-y-4">
       <HotelHeader />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <RatingSection
           rating={formData.overallRating}
           onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
@@ -172,14 +172,12 @@ export const ReviewForm: React.FC = () => {
           attributeDetectionText={attributeDetectionText}
         />
 
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Add some photos</h2>
-            <PhotoUpload
-              onPhotosChange={(photos) => setFormData(prev => ({ ...prev, photos }))}
-            />
-          </CardContent>
-        </Card>
+        <div className="bg-white rounded-lg border p-4">
+          <h2 className="text-xl font-semibold mb-4">Add some photos</h2>
+          <PhotoUpload
+            onPhotosChange={(photos) => setFormData(prev => ({ ...prev, photos }))}
+          />
+        </div>
 
         <SubmitSection onSubmit={handleSubmit} />
       </form>
