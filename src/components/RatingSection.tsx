@@ -30,15 +30,15 @@ export const RatingSection: React.FC<RatingSectionProps> = ({ rating, onRatingCh
       <CardContent className="p-6">
         <h2 className="text-xl font-semibold mb-4">How would you rate your experience?</h2>
         
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
           <CircleRating
             rating={rating}
             onRatingChange={onRatingChange}
             onHoverChange={setHoverRating}
-            size={32}
+            size={24}
           />
           {shouldShowLabel && (
-            <span className="text-lg font-medium text-gray-700 min-w-24">
+            <span className="text-lg font-medium text-gray-700">
               {getRatingLabel(displayRating)}
             </span>
           )}

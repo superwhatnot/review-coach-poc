@@ -13,7 +13,7 @@ export const CircleRating: React.FC<CircleRatingProps> = ({
   rating,
   onRatingChange,
   onHoverChange,
-  size = 32,
+  size = 24,
   className = ""
 }) => {
   const [hoverRating, setHoverRating] = useState(0);
@@ -29,21 +29,21 @@ export const CircleRating: React.FC<CircleRatingProps> = ({
   };
 
   return (
-    <div className={`flex gap-2 ${className}`}>
+    <div className={`flex gap-1 ${className}`}>
       {[1, 2, 3, 4, 5].map((circle) => (
         <button
           key={circle}
           type="button"
-          className="transition-transform hover:scale-110 focus:outline-none"
+          className="transition-transform hover:scale-105 focus:outline-none p-1"
           onMouseEnter={() => handleMouseEnter(circle)}
           onMouseLeave={handleMouseLeave}
           onClick={() => onRatingChange(circle)}
         >
           <div
-            className={`rounded-full border-2 transition-colors ${
+            className={`rounded-full transition-colors ${
               circle <= (hoverRating || rating)
-                ? 'bg-green-500 border-green-500'
-                : 'bg-white border-green-500'
+                ? 'bg-green-500'
+                : 'bg-white border-2 border-green-500'
             }`}
             style={{ width: size, height: size }}
           />
