@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 interface CircleRatingProps {
   rating: number;
   onRatingChange: (rating: number) => void;
+  onHoverChange?: (hoverRating: number) => void;
   size?: number;
   className?: string;
 }
@@ -11,10 +12,21 @@ interface CircleRatingProps {
 export const CircleRating: React.FC<CircleRatingProps> = ({
   rating,
   onRatingChange,
+  onHoverChange,
   size = 32,
   className = ""
 }) => {
   const [hoverRating, setHoverRating] = useState(0);
+
+  const handleMouseEnter = (circle: number) => {
+    setHoverRating(circle);
+    onHoverChange?.(circle);
+  };
+
+  const handleMouseLeave = () => {
+    setHoverRating(0);
+    onHoverChange?.(0);
+  };
 
   return (
     <div className={`flex gap-2 ${className}`}>
@@ -23,8 +35,8 @@ export const CircleRating: React.FC<CircleRatingProps> = ({
           key={circle}
           type="button"
           className="transition-transform hover:scale-110 focus:outline-none"
-          onMouseEnter={() => setHoverRating(circle)}
-          onMouseLeave={() => setHoverRating(0)}
+          onMouseEnter={() => handleMouseEnter(circle)}
+          onMouseLeave={handleMouseLeave}
           onClick={() => onRatingChange(circle)}
         >
           <div

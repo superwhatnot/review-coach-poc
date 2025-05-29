@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { CircleRating } from './CircleRating';
 
@@ -9,16 +9,21 @@ interface RatingSectionProps {
 }
 
 export const RatingSection: React.FC<RatingSectionProps> = ({ rating, onRatingChange }) => {
+  const [hoverRating, setHoverRating] = useState(0);
+
   const getRatingLabel = (rating: number) => {
     switch (rating) {
       case 1: return "Terrible";
       case 2: return "Poor";
       case 3: return "Average";
-      case 4: return "Very Good";
+      case 4: return "Good";
       case 5: return "Excellent";
       default: return "";
     }
   };
+
+  const displayRating = hoverRating || rating;
+  const shouldShowLabel = hoverRating > 0 || rating > 0;
 
   return (
     <Card>
@@ -29,11 +34,12 @@ export const RatingSection: React.FC<RatingSectionProps> = ({ rating, onRatingCh
           <CircleRating
             rating={rating}
             onRatingChange={onRatingChange}
+            onHoverChange={setHoverRating}
             size={32}
           />
-          {rating > 0 && (
+          {shouldShowLabel && (
             <span className="text-lg font-medium text-gray-700 min-w-24">
-              {getRatingLabel(rating)}
+              {getRatingLabel(displayRating)}
             </span>
           )}
         </div>
