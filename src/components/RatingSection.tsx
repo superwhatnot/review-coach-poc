@@ -25,7 +25,7 @@ export const RatingSection: React.FC<RatingSectionProps> = ({ rating, onRatingCh
   const shouldShowLabel = hoverRating > 0 || rating > 0;
 
   return (
-    <div className="bg-white rounded-lg border p-4">
+    <div className="mb-6">
       <h2 className="text-xl font-semibold mb-4">How would you rate your experience?</h2>
       
       <div className="flex items-center gap-4">

@@ -5,7 +5,6 @@ import { HotelHeader } from './HotelHeader';
 import { RatingSection } from './RatingSection';
 import { ReviewContentSection } from './ReviewContentSection';
 import { SubmitSection } from './SubmitSection';
-import { Card, CardContent } from '@/components/ui/card';
 import { EnhancedSmartQuestionSelector } from '../services/enhancedSmartQuestions';
 
 interface ReviewFormData {
@@ -152,10 +151,10 @@ export const ReviewForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div>
       <HotelHeader />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit}>
         <RatingSection
           rating={formData.overallRating}
           onRatingChange={(rating) => setFormData(prev => ({ ...prev, overallRating: rating }))}
@@ -172,7 +171,7 @@ export const ReviewForm: React.FC = () => {
           attributeDetectionText={attributeDetectionText}
         />
 
-        <div className="bg-white rounded-lg border p-4">
+        <div className="mb-6">
           <h2 className="text-xl font-semibold mb-4">Add some photos</h2>
           <PhotoUpload
             onPhotosChange={(photos) => setFormData(prev => ({ ...prev, photos }))}

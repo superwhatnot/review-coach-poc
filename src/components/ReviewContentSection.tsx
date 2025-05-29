@@ -30,7 +30,7 @@ export const ReviewContentSection: React.FC<ReviewContentSectionProps> = ({
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
 
   return (
-    <div className="bg-white rounded-lg border p-4">
+    <div className="mb-6">
       <h2 className="text-xl font-semibold mb-4">Write your review</h2>
       
       <div className="space-y-4">

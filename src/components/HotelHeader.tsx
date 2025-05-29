@@ -4,7 +4,7 @@ import { MapPin } from 'lucide-react';
 
 export const HotelHeader: React.FC = () => {
   return (
-    <div className="bg-white rounded-lg border p-4 mb-4">
+    <div className="pb-6 mb-6 border-b border-gray-200">
       <div className="flex items-start gap-4">
         <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
           <img 
