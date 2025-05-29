@@ -20,7 +20,7 @@ export const HotelHeader: React.FC = () => {
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Club Hotel Marina Beach</h1>
           <div className="text-sm text-gray-600">
-            <div>Marina di Orosei, Orosei, Province of Nuoro,</div>
+            <div>Marina di Orosei, Orosei, Province of Nuoro</div>
             <div>Sardinia, Italy</div>
           </div>
         </div>
