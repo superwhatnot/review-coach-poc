@@ -94,10 +94,10 @@ const contextualPatterns: ContextualPattern[] = [
   }
 ];
 
-export const detectTopicFromText = (text: string): string | null => {
+export const detectTopicFromText = (text: string): string[] => {
   const normalizedText = text.toLowerCase().trim();
   
-  if (!normalizedText) return null;
+  if (!normalizedText) return [];
   
   console.log(`Analyzing text for contextual topic detection: "${normalizedText}"`);
   
@@ -156,14 +156,14 @@ export const detectTopicFromText = (text: string): string | null => {
   
   console.log('Category scores:', categoryScores);
   
-  // Return the category with the highest score
-  const sortedCategories = Object.entries(categoryScores)
-    .sort(([, a], [, b]) => b - a);
+  // Return all categories that meet the minimum threshold (score >= 3)
+  const detectedCategories = Object.entries(categoryScores)
+    .filter(([, score]) => score >= 3)
+    .map(([category]) => category);
   
-  const detectedCategory = sortedCategories.length > 0 ? sortedCategories[0][0] : null;
-  console.log(`Detected category: ${detectedCategory}`);
+  console.log(`Detected categories: ${detectedCategories.join(', ')}`);
   
-  return detectedCategory;
+  return detectedCategories;
 };
 
 export const getLastSentence = (text: string): string => {

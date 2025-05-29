@@ -23,19 +23,21 @@ export const analyzeReviewContent = (reviewText: string): CoveredTopic[] => {
   const topicCoverage: { [category: string]: CoveredTopic } = {};
 
   sentences.forEach(sentence => {
-    const detectedTopic = detectTopicFromText(sentence);
-    if (detectedTopic) {
-      if (!topicCoverage[detectedTopic]) {
-        topicCoverage[detectedTopic] = {
-          category: detectedTopic,
+    const detectedTopics = detectTopicFromText(sentence);
+    
+    // Handle multiple topics detected from a single sentence
+    detectedTopics.forEach(topic => {
+      if (!topicCoverage[topic]) {
+        topicCoverage[topic] = {
+          category: topic,
           score: 0,
           examples: []
         };
       }
       
-      topicCoverage[detectedTopic].score += 1;
-      topicCoverage[detectedTopic].examples.push(sentence);
-    }
+      topicCoverage[topic].score += 1;
+      topicCoverage[topic].examples.push(sentence);
+    });
   });
 
   const coveredTopics = Object.values(topicCoverage);
