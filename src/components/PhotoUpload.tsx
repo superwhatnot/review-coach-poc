@@ -70,14 +70,13 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({ onPhotosChange }) => {
       )}
       
       {photos.length === 0 && (
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
-          <Camera size={48} className="mx-auto text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Click to add photos or drag and drop</h3>
+        <div className="bg-gray-50 rounded-lg p-12 text-center">
+          <div className="w-16 h-16 mx-auto mb-6 bg-white rounded-lg flex items-center justify-center border border-gray-200">
+            <Camera size={24} className="text-gray-400" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Click to add photos</h3>
+          <p className="text-gray-500 mb-6">or drag and drop</p>
           <label>
-            <Button variant="outline" className="cursor-pointer">
-              <Upload className="mr-2" size={16} />
-              Upload photos
-            </Button>
             <input
               type="file"
               multiple
@@ -85,6 +84,9 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({ onPhotosChange }) => {
               onChange={handleFileUpload}
               className="hidden"
             />
+            <div className="cursor-pointer">
+              <span className="text-gray-900">Click to add photos</span>
+            </div>
           </label>
         </div>
       )}
