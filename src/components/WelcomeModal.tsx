@@ -17,21 +17,38 @@ interface WelcomeModalProps {
 export const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
-            Welcome to the AI-Assisted Review Coach demo.
-          </DialogTitle>
-          <DialogDescription className="text-sm text-gray-600 mt-4 leading-relaxed whitespace-pre-line">
-            {`Use the form as you normally would — I won't give any instructions.
-If you have feedback, Slack me (Raja). We're building this for real, and this is a pretty close representation of what the final version could look like.
-I put it together in a few hours using Lovable (cost: $25) to help tighten the spec and give us something interactive for UXR.`}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex justify-center mt-6">
-          <Button onClick={onClose} className="px-8 py-2">
-            Start
-          </Button>
+      <DialogContent className="sm:max-w-2xl bg-black border-4 border-green-400 rounded-none shadow-2xl shadow-green-400/20">
+        <div className="relative p-8 bg-gradient-to-b from-black to-gray-900">
+          {/* Retro grid pattern background */}
+          <div className="absolute inset-0 opacity-10 bg-[linear-gradient(rgba(0,255,0,0.3)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,0,0.3)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+          
+          <DialogHeader className="relative z-10">
+            <DialogTitle className="text-3xl font-mono font-bold text-green-400 text-center mb-8 tracking-wider animate-pulse">
+              ★ WELCOME TO THE AI-ASSISTED REVIEW COACH DEMO ★
+            </DialogTitle>
+            <DialogDescription className="text-green-300 font-mono text-center leading-relaxed whitespace-pre-line text-lg tracking-wide">
+              {`USE THE FORM AS YOU NORMALLY WOULD — I WON'T GIVE ANY INSTRUCTIONS.
+
+IF YOU HAVE FEEDBACK, SLACK ME (RAJA). WE'RE BUILDING THIS FOR REAL, AND THIS IS A PRETTY CLOSE REPRESENTATION OF WHAT THE FINAL VERSION COULD LOOK LIKE.
+
+I PUT IT TOGETHER IN A FEW HOURS USING LOVABLE (COST: $25) TO HELP TIGHTEN THE SPEC AND GIVE US SOMETHING INTERACTIVE FOR UXR.`}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex justify-center mt-12 relative z-10">
+            <Button 
+              onClick={onClose} 
+              className="px-12 py-4 text-xl font-mono font-bold bg-green-500 hover:bg-green-400 text-black border-2 border-green-300 rounded-none shadow-lg hover:shadow-green-400/50 transition-all duration-200 hover:scale-105 tracking-wider"
+            >
+              ► START GAME ◄
+            </Button>
+          </div>
+          
+          {/* Decorative corners */}
+          <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-green-400"></div>
+          <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-green-400"></div>
+          <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-green-400"></div>
+          <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-green-400"></div>
         </div>
       </DialogContent>
     </Dialog>
