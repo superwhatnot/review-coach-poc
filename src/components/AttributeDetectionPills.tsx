@@ -23,12 +23,15 @@ export const AttributeDetectionPills: React.FC<AttributeDetectionPillsProps> = (
     }
   };
 
-  if (!isVisible) {
-    return null;
-  }
-
   return (
-    <div className="flex flex-wrap items-center text-sm text-gray-600 mb-3 px-4 py-2 bg-gray-50 rounded-lg">
+    <div className={`
+      flex flex-wrap items-center text-sm text-gray-600 mb-3 px-4 py-2 bg-gray-50 rounded-lg
+      transition-all duration-300 ease-out
+      ${isVisible 
+        ? 'opacity-100 translate-y-0 max-h-20' 
+        : 'opacity-0 -translate-y-2 max-h-0 overflow-hidden mb-0 py-0'
+      }
+    `}>
       <span className="mr-3 font-bold text-gray-700 whitespace-nowrap">Suggestions</span>
       {allCategories.map((category, index) => {
         const isDetected = detectedCategoryNames.has(category);
