@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useToast } from '@/hooks/use-toast';
@@ -35,35 +34,37 @@ export const ReviewForm: React.FC = () => {
     photos: []
   });
   const [showSayMore, setShowSayMore] = useState(false);
-  const [sayMoreDismissed, setSayMoreDismissed] = useState(false);
-  const [sentenceCount, setSentenceCount] = useState(0);
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [lastSentenceCount, setLastSentenceCount] = useState(0);
 
-  // Check for sentence completion (punctuation marks)
+  // Check for sentence completion and cycle messages
   useEffect(() => {
     const text = formData.review.trim();
-    if (text.length > 0 && !sayMoreDismissed) {
-      const sentences = text.split(/[.!?]/).filter(sentence => sentence.trim().length > 0);
-      const currentSentenceCount = sentences.length;
+    if (text.length > 0) {
+      // Count completed sentences (ending with punctuation)
+      const completedSentences = (text.match(/[.!?]/g) || []).length;
       
-      const lastChar = text[text.length - 1];
-      const hasSentenceEnding = /[.!?]/.test(lastChar);
-      
-      if (hasSentenceEnding && !showSayMore) {
-        setSentenceCount(currentSentenceCount);
+      // Check if we just completed a new sentence
+      if (completedSentences > lastSentenceCount) {
+        setLastSentenceCount(completedSentences);
+        setMessageIndex(completedSentences - 1); // Use 0-based index
         setShowSayMore(true);
+        
+        console.log(`New sentence completed! Count: ${completedSentences}, Message: "${encouragingMessages[completedSentences - 1]}"`);
       }
     } else {
       setShowSayMore(false);
+      setLastSentenceCount(0);
+      setMessageIndex(0);
     }
-  }, [formData.review, sayMoreDismissed]);
+  }, [formData.review, lastSentenceCount]);
 
   const handleDismissSayMore = () => {
     setShowSayMore(false);
-    setSayMoreDismissed(true);
   };
 
   const getCurrentMessage = () => {
-    return encouragingMessages[sentenceCount % encouragingMessages.length];
+    return encouragingMessages[messageIndex % encouragingMessages.length];
   };
 
   const handleSubmit = (e: React.FormEvent) => {
