@@ -16,6 +16,17 @@ interface ReviewFormData {
   photos: File[];
 }
 
+const encouragingMessages = [
+  "Say more",
+  "Tell us more!",
+  "Keep going!",
+  "What else?",
+  "Share more details",
+  "Continue your story",
+  "Add more insights",
+  "We'd love to hear more"
+];
+
 export const ReviewForm: React.FC = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState<ReviewFormData>({
@@ -26,15 +37,20 @@ export const ReviewForm: React.FC = () => {
   });
   const [showSayMore, setShowSayMore] = useState(false);
   const [sayMoreDismissed, setSayMoreDismissed] = useState(false);
+  const [sentenceCount, setSentenceCount] = useState(0);
 
   // Check for sentence completion (punctuation marks)
   useEffect(() => {
     const text = formData.review.trim();
     if (text.length > 0 && !sayMoreDismissed) {
+      const sentences = text.split(/[.!?]/).filter(sentence => sentence.trim().length > 0);
+      const currentSentenceCount = sentences.length;
+      
       const lastChar = text[text.length - 1];
       const hasSentenceEnding = /[.!?]/.test(lastChar);
       
       if (hasSentenceEnding && !showSayMore) {
+        setSentenceCount(currentSentenceCount);
         setShowSayMore(true);
       }
     } else {
@@ -45,6 +61,10 @@ export const ReviewForm: React.FC = () => {
   const handleDismissSayMore = () => {
     setShowSayMore(false);
     setSayMoreDismissed(true);
+  };
+
+  const getCurrentMessage = () => {
+    return encouragingMessages[sentenceCount % encouragingMessages.length];
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -145,7 +165,7 @@ export const ReviewForm: React.FC = () => {
                   {/* Say More Banner */}
                   {showSayMore && (
                     <div className="absolute bottom-2 left-2 right-2 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 flex items-center justify-between text-sm">
-                      <span className="text-blue-700 font-medium">Say more</span>
+                      <span className="text-blue-700 font-medium">{getCurrentMessage()}</span>
                       <button
                         type="button"
                         onClick={handleDismissSayMore}
