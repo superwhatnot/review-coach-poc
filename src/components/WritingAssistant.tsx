@@ -120,6 +120,7 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   if (showPrompt && currentSuggestion) {
     return (
       <div 
+        key={currentSuggestion}
         className="py-2 animate-fade-in"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
