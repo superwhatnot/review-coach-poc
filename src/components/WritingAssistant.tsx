@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 
@@ -27,7 +26,6 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   const generationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const cachedSuggestionRef = useRef<string>('');
 
-  // Function to check if text ends with a completed sentence
   const endsWithCompletedSentence = (text: string): boolean => {
     const trimmed = text.trim();
     if (trimmed.length === 0) return false;
@@ -48,7 +46,6 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     return words.length >= 2;
   };
 
-  // Pre-generate suggestion asynchronously without causing re-renders
   const preGenerateSuggestion = (text: string) => {
     if (generationTimeoutRef.current) {
       clearTimeout(generationTimeoutRef.current);
@@ -57,26 +54,22 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     generationTimeoutRef.current = setTimeout(() => {
       const suggestion = getSmartQuestion(text);
       if (suggestion && suggestion.trim()) {
-        // Cache the suggestion without updating state immediately
         cachedSuggestionRef.current = suggestion;
       }
     }, 0);
   };
 
-  // Effect to handle showing the prompt after sentence completion
   useEffect(() => {
     if (!isEnabled || isMinimized) {
       return;
     }
 
-    // Clear existing timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
     const text = reviewText.trim();
     
-    // Reset if text is empty
     if (text.length === 0) {
       setShowPrompt(false);
       setLastProcessedText('');
@@ -84,14 +77,11 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
       return;
     }
 
-    // Pre-generate suggestion for any substantial text change
     if (text !== lastProcessedText && text.length > 10) {
       preGenerateSuggestion(text);
     }
 
-    // Only trigger auto-show if we just completed a sentence and it's new content
     if (endsWithCompletedSentence(text) && text !== lastProcessedText) {
-      // Start 2-second timer to show prompt
       timeoutRef.current = setTimeout(() => {
         if (cachedSuggestionRef.current) {
           setCurrentSuggestion(cachedSuggestionRef.current);
@@ -111,7 +101,6 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
     };
   }, [reviewText, isEnabled, lastProcessedText, isMinimized]);
 
-  // When restored from minimized state, show the prompt
   useEffect(() => {
     if (!isMinimized && currentSuggestion) {
       setShowPrompt(true);
@@ -119,7 +108,6 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   }, [isMinimized, currentSuggestion]);
 
   const handleHelpMeWriteClick = () => {
-    // Use cached suggestion first, or generate immediately as fallback
     let suggestion = cachedSuggestionRef.current;
     if (!suggestion && reviewText.trim()) {
       suggestion = getSmartQuestion(reviewText);
@@ -142,12 +130,10 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
 
   if (!isEnabled) return null;
 
-  // If minimized, don't render anything here (it will be rendered in the character count area)
   if (isMinimized) {
     return null;
   }
 
-  // Show dynamic prompt as simple light grey text with fade-in animation
   if (showPrompt && currentSuggestion) {
     return (
       <div 
@@ -157,13 +143,13 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="flex items-center justify-between">
-          <span className="text-gray-400 text-sm">
+          <span className="text-gray-600 text-sm">
             {currentSuggestion}
           </span>
           {isHovered && (
             <button
               onClick={handleCollapse}
-              className="text-gray-400 hover:text-gray-600 text-xs flex-shrink-0 ml-2"
+              className="text-gray-500 hover:text-gray-700 text-xs flex-shrink-0 ml-2"
             >
               <X size={14} />
             </button>
@@ -176,7 +162,6 @@ export const WritingAssistant: React.FC<WritingAssistantProps> = ({
   return null;
 };
 
-// Export a component for the minimized state to be used in the character count line
 export const MinimizedWritingAssistant: React.FC<{
   isMinimized: boolean;
   onHelpMeWriteClick: () => void;
@@ -186,7 +171,7 @@ export const MinimizedWritingAssistant: React.FC<{
   return (
     <button
       onClick={onHelpMeWriteClick}
-      className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1"
+      className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
     >
       Help me write
       <ArrowRight size={14} />
